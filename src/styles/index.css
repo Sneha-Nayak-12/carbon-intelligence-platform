@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 210 40% 98%; /* #F8FAFC */
+    --foreground: 222.2 84% 4.9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+
+    --primary: 174 84% 26%; /* #0F766E - Deep Emerald Green */
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 221.2 83.2% 53.3%; /* #2563EB - Blue */
+    --secondary-foreground: 210 40% 98%;
+
+    --accent: 142 70% 45%; /* #22C55E - Fresh Green */
+    --accent-foreground: 210 40% 98%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --destructive: 0 84.2% 60.2%; /* #EF4444 - Red */
+    --destructive-foreground: 210 40% 98%;
+
+    --warning: 38 92% 50%; /* #F59E0B - Amber */
+    --warning-foreground: 222.2 47.5% 11.2%;
+
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 174 84% 26%;
+
+    --radius: 12px;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-slate-100;
+  }
+  body {
+    @apply bg-[#F8FAFC] text-slate-900 font-sans antialiased selection:bg-[#0F766E]/10 selection:text-[#0F766E];
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-200 rounded-full hover:bg-slate-300;
+}
+
+/* Premium Typography Helper Classes */
+.font-display {
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.02em;
+  font-weight: 800;
+}
+
+.font-heading {
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.015em;
+  font-weight: 700;
+}
+
+.font-subheading {
+  font-family: 'Inter', sans-serif;
+  letter-spacing: -0.01em;
+  font-weight: 600;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(241, 245, 249, 0.8);
+}
