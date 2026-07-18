@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-import { Leaf, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 interface LoginFormInputs {
   email: string;
@@ -28,12 +28,7 @@ export const Login: React.FC = () => {
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         {/* Brand Logo */}
         <div className="flex justify-center items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#0F766E] text-white shadow-soft">
-            <Leaf className="h-5.5 w-5.5" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900 font-heading">
-            Carbon Intelligence
-          </span>
+          <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-12 w-auto object-contain" />
         </div>
         <h2 className="mt-6 text-center text-2xl font-bold tracking-tight text-slate-950 font-heading">
           Sign in to your platform

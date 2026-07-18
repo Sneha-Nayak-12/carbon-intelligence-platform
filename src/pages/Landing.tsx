@@ -122,12 +122,7 @@ export const Landing: React.FC = () => {
       {/* 1. Public Navigation Header */}
       <nav className="sticky top-0 z-50 bg-white/70 backdrop-blur-md border-b border-slate-100 h-16 flex items-center justify-between px-6 md:px-12">
         <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F766E] text-white">
-            <Leaf className="h-5 w-5" />
-          </div>
-          <span className="text-base font-bold text-slate-900 font-heading tracking-tight">
-            Carbon Intelligence
-          </span>
+          <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-8 w-auto object-contain" />
         </div>
 
         {/* Desktop nav links */}
@@ -170,7 +165,7 @@ export const Landing: React.FC = () => {
             Empowering Enterprise ESG Node
           </div>
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-950 font-heading leading-tight">
-            Carbon Intelligence for a <span className="text-[#0F766E]">Net-Zero</span> Future
+            GreenASHA for a <span className="text-[#0F766E]">Net-Zero</span> Future
           </h1>
           <p className="text-sm md:text-base text-slate-500 font-light leading-relaxed max-w-lg">
             A unified platform to discover carbon projects, purchase verified carbon credits, monitor sustainability performance, and generate actionable carbon intelligence.
@@ -329,8 +324,8 @@ export const Landing: React.FC = () => {
             <div className="h-9 w-9 rounded-lg bg-teal-50 text-[#0F766E] flex items-center justify-center mb-4">
               <Sparkles className="h-4.5 w-4.5" />
             </div>
-            <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#0F766E] transition-colors font-heading">
-              Carbon Intelligence
+             <h3 className="text-sm font-bold text-slate-900 group-hover:text-[#0F766E] transition-colors font-heading">
+              GreenASHA Intelligence
             </h3>
             <p className="text-xs text-slate-500 font-light leading-relaxed mt-2">
               Analyze price index movements, market volatility, and capture compliance rebalancing suggestions.
@@ -549,7 +544,7 @@ export const Landing: React.FC = () => {
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <h2 className="text-2xl md:text-3xl font-extrabold text-slate-900 font-heading">
-              Carbon Intelligence Preview
+              GreenASHA Intelligence Preview
             </h2>
             <p className="text-xs text-slate-500 font-light max-w-xl mx-auto">
               Inspect how the system aggregates compliance trends, models forecasts, and compiles AI executive summaries.
@@ -842,8 +837,7 @@ export const Landing: React.FC = () => {
           {/* Logo Brand */}
           <div className="col-span-2 space-y-4">
             <div className="flex items-center gap-2 text-white">
-              <Leaf className="h-6 w-6 text-[#0F766E]" />
-              <span className="text-lg font-bold font-heading tracking-tight">Carbon Intelligence</span>
+              <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-8 w-auto object-contain" />
             </div>
             <p className="text-xs text-slate-500 font-light leading-relaxed max-w-xs">
               Unified platform to discover carbon projects, purchase verified carbon credits, monitor sustainability performance, and generate actionable carbon intelligence.
@@ -892,7 +886,7 @@ export const Landing: React.FC = () => {
         </div>
 
         <div className="max-w-7xl mx-auto pt-8 flex flex-col sm:flex-row sm:justify-between items-center text-xs text-slate-600 gap-4">
-          <span>&copy; {new Date().getFullYear()} Carbon Intelligence Platform. All rights reserved.</span>
+          <span>&copy; {new Date().getFullYear()} GreenASHA Platform. All rights reserved.</span>
           <div className="flex gap-4">
             <a href="#" className="hover:text-slate-400 transition-colors">Twitter</a>
             <a href="#" className="hover:text-slate-400 transition-colors">LinkedIn</a>

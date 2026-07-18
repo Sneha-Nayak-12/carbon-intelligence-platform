@@ -143,7 +143,7 @@ export const Home: React.FC = () => {
               Corporate Compliance Workspace
             </div>
             <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight text-slate-900 font-heading">
-              Carbon Intelligence Platform
+              GreenASHA Platform
             </h2>
             <p className="text-sm text-slate-500 font-light leading-relaxed max-w-xl">
               Audit corporate carbon balance sheets, retire high-integrity credits securely, and connect with global decentralized verifier registries under standard compliance frameworks.

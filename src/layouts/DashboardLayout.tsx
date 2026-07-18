@@ -70,14 +70,9 @@ export const DashboardLayout: React.FC = () => {
           </button>
 
           {/* Logo brand */}
-          <div className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F766E] text-white">
-              <Leaf className="h-5 w-5" />
-            </div>
-            <span className="hidden sm:inline-block text-base font-bold text-slate-950 font-heading tracking-tight">
-              Carbon Intel
-            </span>
-          </div>
+          <Link to="/" className="flex items-center gap-2">
+            <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-8 w-auto object-contain" />
+          </Link>
 
           <span className="hidden md:inline-block h-4 w-px bg-slate-200"></span>
 
@@ -301,14 +296,9 @@ export const DashboardLayout: React.FC = () => {
                 className="fixed top-0 bottom-0 left-0 w-72 bg-white border-r border-slate-100 z-50 md:hidden flex flex-col p-6 shadow-premium"
               >
                 <div className="flex items-center justify-between mb-8">
-                  <div className="flex items-center gap-2">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#0F766E] text-white">
-                      <Leaf className="h-5 w-5" />
-                    </div>
-                    <span className="text-base font-bold text-slate-950 font-heading">
-                      Carbon Intel
-                    </span>
-                  </div>
+                  <Link to="/" className="flex items-center gap-2" onClick={() => setIsMobileOpen(false)}>
+                    <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-8 w-auto object-contain" />
+                  </Link>
                   <button
                     onClick={() => setIsMobileOpen(false)}
                     className="p-2 rounded-lg text-slate-400 hover:bg-slate-50 hover:text-slate-600"
@@ -353,7 +343,7 @@ export const DashboardLayout: React.FC = () => {
           {/* Footer */}
           <footer className="mt-16 border-t border-slate-100 pt-6 pb-2 text-center text-xs text-slate-400 font-light flex flex-col sm:flex-row sm:justify-between items-center gap-2">
             <span>
-              &copy; {new Date().getFullYear()} Carbon Intelligence Platform. All rights reserved.
+              &copy; {new Date().getFullYear()} GreenASHA Platform. All rights reserved.
             </span>
             <span className="flex items-center gap-3">
               <a href="#" className="hover:underline">Legal Node</a>

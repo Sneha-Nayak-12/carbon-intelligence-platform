@@ -21,7 +21,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         {/* Breadcrumbs */}
         <nav className="mb-2.5 flex items-center space-x-1 text-xs font-medium text-slate-400">
           <Link to="/" className="hover:text-slate-600 transition-colors">
-            Carbon Intel
+            GreenASHA
           </Link>
           {breadcrumbs.map((crumb, index) => (
             <React.Fragment key={index}>
