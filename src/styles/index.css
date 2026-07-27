@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -88,4 +88,12 @@
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(241, 245, 249, 0.8);
+}
+
+.font-serif-display {
+  font-family: 'Fraunces', Georgia, serif;
+}
+
+.font-editorial {
+  font-family: 'Fraunces', Georgia, serif;
 }
