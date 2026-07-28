@@ -97,3 +97,58 @@
 .font-editorial {
   font-family: 'Fraunces', Georgia, serif;
 }
+
+/* Premium Motion and Utility Classes */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes pulseGlow {
+  0% { opacity: 0.3; transform: scale(1.0) translate(0px, 0px); }
+  50% { opacity: 0.6; transform: scale(1.08) translate(10px, -5px); }
+  100% { opacity: 0.3; transform: scale(1.0) translate(0px, 0px); }
+}
+
+@keyframes driftParticles {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(180deg); }
+  100% { transform: translateY(0px) rotate(360deg); }
+}
+
+.animate-float-slow {
+  animation: float 8s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float 5.5s ease-in-out infinite;
+}
+
+.animate-glow-slow {
+  animation: pulseGlow 12s ease-in-out infinite;
+}
+
+.animate-drift-slow {
+  animation: driftParticles 25s linear infinite;
+}
+
+/* Apple/VisionPro-style Glassmorphism overlays */
+.premium-glass {
+  background: rgba(8, 18, 16, 0.38);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(16, 185, 129, 0.12);
+  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.8),
+              inset 0 1px 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.premium-glass-light {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.8),
+              inset 0 1px 1px 0 rgba(255, 255, 255, 0.08);
+}
+

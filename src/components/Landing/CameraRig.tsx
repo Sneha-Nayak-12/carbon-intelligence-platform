@@ -28,13 +28,34 @@ export const CameraRig: React.FC = () => {
     
     const scrollVal = scrollYProgress ? scrollYProgress.get() : 0;
     if (scrollVal > 0) {
-      const scrollEase = Math.min(scrollVal * 2.0, 1.0);
+      let targetZ = camZ;
+      let targetY = camY;
+      let targetX = camX;
+      let lookAtY = -3.2;
       
-      camZ = THREE.MathUtils.lerp(camZ, 3.8, scrollEase);
-      camY = THREE.MathUtils.lerp(camY, -2.6, scrollEase);
+      if (scrollVal < 0.35) {
+        const t = scrollVal / 0.35;
+        const ease = Math.sin(t * Math.PI / 2);
+        targetZ = THREE.MathUtils.lerp(camZ, 5.5, ease);
+        targetY = THREE.MathUtils.lerp(camY, -4.5, ease);
+        targetX = THREE.MathUtils.lerp(camX, -2.8, ease); // Shift Earth left to balance layout
+        lookAtY = THREE.MathUtils.lerp(0, -4.2, ease);
+      } else if (scrollVal < 0.70) {
+        targetZ = 5.5;
+        targetY = -4.5;
+        targetX = -2.8;
+        lookAtY = -4.2;
+      } else {
+        const t = Math.min((scrollVal - 0.70) / 0.30, 1.0);
+        const ease = Math.sin(t * Math.PI / 2);
+        targetZ = THREE.MathUtils.lerp(5.5, 7.5, ease);
+        targetY = THREE.MathUtils.lerp(-4.5, -2.0, ease);
+        targetX = THREE.MathUtils.lerp(-2.8, 0, ease);
+        lookAtY = THREE.MathUtils.lerp(-4.2, -2.0, ease);
+      }
       
-      camera.position.set(camX, camY, camZ);
-      camera.lookAt(0, -3.2, 0);
+      camera.position.set(targetX, targetY, targetZ);
+      camera.lookAt(0, lookAtY, 0);
     } else {
       camera.position.set(camX, camY, camZ);
       camera.lookAt(0, 0, 0);

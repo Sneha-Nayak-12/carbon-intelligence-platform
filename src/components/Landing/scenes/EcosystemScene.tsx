@@ -4,7 +4,7 @@ import { Activity, Database, Building, Leaf, Lock, Sparkles } from 'lucide-react
 
 export const EcosystemScene: React.FC = () => {
   return (
-    <section className="relative bg-[#151614] text-stone-100 px-6 md:px-24 py-32 overflow-hidden border-t border-stone-900">
+    <section className="relative bg-transparent text-stone-100 px-6 md:px-24 py-32 overflow-hidden border-t border-emerald-950/20 backdrop-blur-[1px] z-10">
       
       {/* Background blueprint vector grid */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-50">

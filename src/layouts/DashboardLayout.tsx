@@ -219,7 +219,7 @@ export const DashboardLayout: React.FC = () => {
                       <p className="text-[10px] text-slate-400 font-light mt-0.5 truncate">{mockUserProfile.email}</p>
                     </div>
                     <Link
-                      to="/settings"
+                      to="/dashboard/settings"
                       onClick={() => setIsProfileOpen(false)}
                       className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-xs text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors"
                     >

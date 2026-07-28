@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useTransform } from 'framer-motion';
 import { Canvas } from '@react-three/fiber';
+import { Environment } from '@react-three/drei';
 import * as THREE from 'three';
 import { Shield } from 'lucide-react';
 
@@ -183,13 +184,34 @@ const LandingContent: React.FC = () => {
   const activeBatchData = mockExchangeBatches[activeExchangeTab].find(b => b.id === selectedExchangeBatch) || mockExchangeBatches[activeExchangeTab][0];
 
   return (
-    <div className="min-h-screen bg-[#FAF8F6] text-[#151614] flex flex-col font-sans selection:bg-emerald-800/10 selection:text-emerald-950">
+    <div className="min-h-screen bg-[#030508] text-stone-100 flex flex-col font-sans selection:bg-emerald-800/10 selection:text-emerald-950 relative">
+
+      {/* Persistent Cinematic Background R3F Canvas */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <Canvas
+          camera={{ fov: 45, near: 0.1, far: 100, position: [0, 0.5, 9] }}
+          gl={{ antialias: true, alpha: false }}
+        >
+          <color attach="background" args={['#030508']} />
+          <fog attach="fog" args={['#030508', 5, 20]} />
+          
+          <ambientLight intensity={1.5} />
+          <directionalLight position={[5, 3, 5]} intensity={2.8} />
+          <directionalLight position={[-5, -3, -5]} intensity={1.2} color="#d4ece0" />
+          <Environment preset="night" />
+          
+          <StarField />
+          <NebulaBackground />
+          <EarthSceneContent cursorRef={cursorRef} />
+          <CameraRig />
+        </Canvas>
+      </div>
 
       {/* Floating editorial header (fades in as we scroll into the light content) */}
       <motion.nav
         style={{
           opacity: showMainHeader,
-          pointerEvents: useTransform(scrollYProgress, (v: number) => v > 0.75 ? 'auto' : 'none') as any
+          pointerEvents: useTransform(scrollYProgress, (v: number) => v > 0.28 ? 'auto' : 'none') as any
         }}
         className="fixed top-0 z-50 w-full bg-[#FAF8F6]/80 backdrop-blur-md border-b border-[#1E3A2F]/5 h-16 flex items-center justify-between px-6 md:px-12"
       >
@@ -220,25 +242,9 @@ const LandingContent: React.FC = () => {
       <section
         ref={containerRef}
         onPointerMove={handlePointerMove}
-        className="relative h-[250vh] bg-stone-950 text-white z-10"
+        className="relative h-[250vh] bg-transparent text-white z-10"
       >
         <div className="sticky top-0 h-screen w-full overflow-hidden">
-
-          {/* R3F Canvas Container */}
-          <div className="absolute inset-0 z-0">
-            <Canvas
-              camera={{ fov: 45, near: 0.1, far: 100, position: [0, 0.5, 9] }}
-              gl={{ antialias: true, alpha: false }}
-            >
-              <color attach="background" args={['#030508']} />
-              <fog attach="fog" args={['#030508', 5, 20]} />
-              
-              <StarField />
-              <NebulaBackground />
-              <EarthSceneContent cursorRef={cursorRef} />
-              <CameraRig />
-            </Canvas>
-          </div>
 
           {/* Cinematic transparent nav header */}
           <div className="absolute top-0 left-0 w-full h-20 flex items-center justify-between px-6 md:px-12 z-30 pointer-events-auto">
@@ -254,7 +260,7 @@ const LandingContent: React.FC = () => {
               </span>
             </motion.div>
 
-            <div className="flex items-center gap-6 md:gap-8">
+            <div className="flex items-center gap-4 md:gap-8 z-30 pointer-events-auto flex-shrink-0">
               {["About", "Projects", "Contact"].map((item, i) => (
                 <motion.a
                   key={item}
@@ -263,21 +269,28 @@ const LandingContent: React.FC = () => {
                   initial="hidden"
                   animate="visible"
                   href="#"
-                  className="text-[10px] font-mono uppercase tracking-widest text-white/50 hover:text-white transition-colors"
+                  className="hidden md:inline text-[10px] font-mono uppercase tracking-widest text-white/50 hover:text-white transition-colors"
                 >
                   {item}
                 </motion.a>
               ))}
+              <span className="h-4 w-px bg-white/10 hidden md:inline-block" />
+              <Link
+                to="/login"
+                className="inline-flex h-8 items-center justify-center border border-white/15 rounded bg-[#1E3A2F] px-4 text-[10px] font-mono uppercase tracking-widest text-[#FAF8F6] transition-all hover:bg-stone-900 active:scale-95 shadow-soft flex-shrink-0"
+              >
+                Sign In
+              </Link>
             </div>
           </div>
 
           {/* Hero text overlay */}
           <HeroScene />
 
-          {/* Transition fog overlay to cream-white */}
+          {/* Transition fog overlay to deep emerald/teal */}
           <motion.div
             style={{ opacity: overlayOpacity }}
-            className="absolute inset-0 bg-[#FAF8F6] pointer-events-none z-20"
+            className="absolute inset-0 bg-gradient-to-b from-[#030508]/10 via-[#050b0a]/60 to-[#081210] pointer-events-none z-20"
           />
 
         </div>
@@ -286,23 +299,26 @@ const LandingContent: React.FC = () => {
       {/* ==========================================
       SCENE 2: The Project Lifecycle (Scrollytelling)
       ========================================== */}
-      <section className="relative bg-[#F3EFE9] border-y border-[#1E3A2F]/5 px-6 md:px-24 py-32 grid md:grid-cols-2 gap-16 items-start">
+      <section className="relative bg-transparent border-y border-emerald-950/20 px-6 md:px-24 py-32 grid md:grid-cols-2 gap-16 items-start z-10 backdrop-blur-[1px]">
+        
+        {/* Volumetric backlight bubble */}
+        <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] rounded-full bg-teal-500/[0.04] blur-[120px] pointer-events-none animate-glow-slow" />
 
         {/* Left Side Scrolling Content */}
-        <div className="space-y-24">
+        <div className="space-y-24 relative z-10">
           <div className="space-y-4">
-            <span className="inline-block text-xs font-mono uppercase tracking-widest text-emerald-800 bg-emerald-800/5 border border-emerald-800/15 px-2.5 py-1 rounded">
+            <span className="inline-block text-xs font-mono uppercase tracking-widest text-emerald-400 bg-emerald-950/40 border border-emerald-500/20 px-2.5 py-1 rounded">
               Scene II / The Lifecycle
             </span>
-            <h2 className="text-4xl md:text-6xl font-editorial font-bold tracking-tight text-[#1E3A2F] leading-tight">
+            <h2 className="text-4xl md:text-6xl font-editorial font-bold tracking-tight text-white leading-tight">
               Anatomy of <br />Permanent Removal
             </h2>
-            <p className="text-xs font-mono text-[#60645F] max-w-md leading-relaxed">
+            <p className="text-xs font-mono text-stone-400 max-w-md leading-relaxed">
               Scroll through to follow the exact journey of carbon. See how decaying biomass is locked away, audited, issued, and ultimately retired permanently.
             </p>
           </div>
 
-          <div className="space-y-16">
+          <div className="space-y-64 relative z-10 pb-48">
             <CaptureScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[0] = el; }} />
             <TransformationScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[1] = el; }} />
             <VerificationScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[2] = el; }} />
@@ -313,14 +329,14 @@ const LandingContent: React.FC = () => {
         </div>
 
         {/* Right Side Sticky Visualizer Card */}
-        <div className="sticky top-28 h-[460px] w-full flex items-center justify-center">
+        <div className="sticky top-28 self-start h-[460px] w-full flex items-center justify-center relative z-10">
           <motion.div
             style={{
               rotateX: useTransform(scrollYProgress, [0.15, 0.70], [2, -2]),
               rotateY: useTransform(scrollYProgress, [0.15, 0.70], [-2, 2]),
               y: useTransform(scrollYProgress, [0.15, 0.70], [0, 8]),
             }}
-            className="w-full h-full bg-gradient-to-br from-white/90 to-[#FAF8F6]/90 border border-[#1E3A2F]/10 rounded-2xl shadow-premium relative overflow-hidden backdrop-blur-md shadow-[inset_0_1px_2px_rgba(255,255,255,0.85)]"
+            className="w-full h-full premium-glass rounded-2xl relative overflow-hidden animate-float-slow"
           >
             <UnifiedVisualProcessor activeStep={activeStep} />
           </motion.div>
@@ -336,8 +352,12 @@ const LandingContent: React.FC = () => {
       {/* ==========================================
       SCENE 4: The Carbon Credit Exchange
       ========================================== */}
-      <section className="relative bg-[#151614] text-stone-100 px-6 md:px-24 py-32 overflow-hidden">
-        <div className="max-w-6xl mx-auto space-y-12">
+      <section className="relative bg-transparent text-stone-100 px-6 md:px-24 py-32 overflow-hidden border-t border-emerald-950/20 backdrop-blur-[1px] z-10">
+        
+        {/* Volumetric backlight bubble */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] rounded-full bg-emerald-500/[0.03] blur-[130px] pointer-events-none animate-glow-slow" />
+
+        <div className="max-w-6xl mx-auto space-y-12 relative z-10">
 
           <div className="space-y-4 max-w-xl">
             <span className="inline-block text-xs font-mono uppercase tracking-widest text-[#B85C38] bg-[#B85C38]/5 border border-[#B85C38]/15 px-2.5 py-1 rounded">
@@ -352,11 +372,11 @@ const LandingContent: React.FC = () => {
           </div>
 
           {/* Live Order Book Terminal Interface */}
-          <div className="grid md:grid-cols-3 gap-8 bg-stone-950 border border-stone-900 rounded-2xl p-6 shadow-premium relative">
+          <div className="grid md:grid-cols-3 gap-8 premium-glass rounded-2xl p-6 relative overflow-hidden animate-float-medium">
 
             {/* Left Terminal: Tabs & Batch Selection Table */}
-            <div className="md:col-span-2 space-y-4 border-r border-stone-900 pr-0 md:pr-6">
-              <div className="flex items-center justify-between border-b border-stone-900 pb-3">
+            <div className="md:col-span-2 space-y-4 border-r border-emerald-950/20 pr-0 md:pr-6">
+              <div className="flex items-center justify-between border-b border-emerald-950/20 pb-3">
                 <div className="flex gap-2">
                   {(['Biochar', 'Basalt', 'DAC'] as const).map((tab) => (
                     <button
@@ -384,7 +404,7 @@ const LandingContent: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full text-left font-mono text-[10px]">
                   <thead>
-                    <tr className="border-b border-stone-900 text-stone-500 uppercase tracking-widest text-[8px]">
+                    <tr className="border-b border-emerald-950/20 text-stone-500 uppercase tracking-widest text-[8px]">
                       <th className="py-2.5">Batch ID</th>
                       <th className="py-2.5">Project</th>
                       <th className="py-2.5">Permanence</th>
@@ -392,7 +412,7 @@ const LandingContent: React.FC = () => {
                       <th className="py-2.5 text-right">Available</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-stone-900">
+                  <tbody className="divide-y divide-emerald-950/20">
                     {mockExchangeBatches[activeExchangeTab].map((batch) => (
                       <tr
                         key={batch.id}
@@ -415,7 +435,7 @@ const LandingContent: React.FC = () => {
             {/* Right Terminal: Batch Inspection Details Panel */}
             <div className="flex flex-col justify-between space-y-6">
               <div>
-                <div className="flex justify-between items-center border-b border-stone-900 pb-3 mb-4">
+                <div className="flex justify-between items-center border-b border-emerald-950/20 pb-3 mb-4">
                   <span className="text-[9px] font-mono text-stone-400 uppercase tracking-widest">BATCH INSPECTOR</span>
                   <span className="text-[9px] border border-emerald-500/25 bg-emerald-500/5 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold">
                     {activeBatchData.rating} Verified
@@ -447,7 +467,7 @@ const LandingContent: React.FC = () => {
                     </div>
                   </div>
 
-                  <div className="border-t border-stone-900 pt-3 space-y-1">
+                  <div className="border-t border-emerald-950/20 pt-3 space-y-1">
                     <span className="text-[8px] font-mono text-stone-500 uppercase block">Audit Verification Trail</span>
                     <div className="flex items-center gap-1.5 text-[9px] font-mono text-emerald-400">
                       <Shield className="h-3.5 w-3.5" />
@@ -459,7 +479,7 @@ const LandingContent: React.FC = () => {
 
               <Link
                 to="/login"
-                className="w-full inline-flex h-10 items-center justify-center rounded bg-emerald-850 hover:bg-emerald-700 text-[#FAF8F6] text-xs font-mono uppercase tracking-widest transition-all active:scale-95 shadow-md"
+                className="w-full inline-flex h-10 items-center justify-center rounded bg-emerald-700 hover:bg-emerald-600 text-[#FAF8F6] text-xs font-mono uppercase tracking-widest transition-all active:scale-95 shadow-md"
               >
                 Procure Selected Batch
               </Link>
@@ -478,7 +498,7 @@ const LandingContent: React.FC = () => {
       {/* ==========================================
       FINAL CONCLUDING CTA (Documentary Exit)
       ========================================== */}
-      <section className="relative bg-[#151614] text-stone-100 py-32 px-6 md:px-24 text-center overflow-hidden border-t border-stone-800">
+      <section className="relative bg-transparent text-stone-100 py-32 px-6 md:px-24 text-center overflow-hidden border-t border-emerald-950/20 z-10">
         <div className="max-w-2xl mx-auto space-y-8 relative z-10">
           <div className="space-y-4">
             <span className="text-[10px] font-mono uppercase tracking-widest text-stone-500">The Journey Concludes</span>
@@ -493,7 +513,7 @@ const LandingContent: React.FC = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link
               to="/login"
-              className="inline-flex h-11 items-center justify-center rounded bg-emerald-850 px-8 text-xs font-mono uppercase tracking-widest text-[#FAF8F6] hover:bg-emerald-700 active:scale-95 shadow-premium transition-all w-full sm:w-auto"
+              className="inline-flex h-11 items-center justify-center rounded bg-emerald-700 hover:bg-emerald-600 px-8 text-xs font-mono uppercase tracking-widest text-[#FAF8F6] active:scale-95 shadow-premium transition-all w-full sm:w-auto"
             >
               Enter Terminal Catalog
             </Link>
@@ -510,8 +530,8 @@ const LandingContent: React.FC = () => {
       {/* ==========================================
       EDITORIAL FOOTER
       ========================================== */}
-      <footer className="bg-[#151614] text-stone-500 py-16 px-6 md:px-24 border-t border-stone-900 relative z-10 text-[10px] font-mono">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 pb-12 border-b border-stone-900">
+      <footer className="bg-[#030508]/60 text-stone-500 py-16 px-6 md:px-24 border-t border-emerald-950/20 relative z-10 text-[10px] font-mono backdrop-blur-[2px]">
+        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 pb-12 border-b border-[#0b1715]">
           <div className="space-y-3">
             <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-12 w-auto object-contain" />
             <p className="text-[#60645F] font-sans leading-relaxed">

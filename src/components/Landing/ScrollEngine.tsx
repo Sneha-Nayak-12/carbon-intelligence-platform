@@ -22,7 +22,7 @@ export const ScrollEngineProvider: React.FC<{ children: React.ReactNode }> = ({ 
   const textOpacity = useTransform(scrollYProgress, [0.0, 0.25], [1, 0]);
   const textY = useTransform(scrollYProgress, [0.0, 0.25], [0, -45]);
   const overlayOpacity = useTransform(scrollYProgress, [0.45, 0.78], [0, 1]);
-  const showMainHeader = useTransform(scrollYProgress, [0.70, 0.80], [0, 1]);
+  const showMainHeader = useTransform(scrollYProgress, [0.22, 0.32], [0, 1]);
 
   return (
     <ScrollEngineContext.Provider value={{

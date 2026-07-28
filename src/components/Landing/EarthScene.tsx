@@ -4,18 +4,41 @@ import * as THREE from 'three';
 import { useScrollEngine } from './ScrollEngine';
 import { CO2Molecule } from './CarbonPulse';
 
-// Continent coordinates for procedural vector mapping on canvas
+// High-fidelity continent coordinates for a highly realistic world map
 const continents: [number, number][][] = [
-  [[-168, 65], [-120, 70], [-80, 75], [-60, 60], [-55, 48], [-80, 25], [-99, 15], [-105, 20], [-110, 8], [-100, 5], [-85, 8], [-80, 9], [-82, 14], [-90, 16], [-100, 25], [-125, 48], [-125, 60], [-165, 60]],
-  [[-80, 12], [-72, 10], [-60, 5], [-35, -5], [-40, -20], [-60, -40], [-72, -55], [-75, -50], [-70, -40], [-80, -20], [-82, -5]],
-  [[-17, 15], [-5, 35], [10, 37], [32, 31], [34, 27], [43, 12], [51, 11], [46, -20], [34, -34], [18, -34], [10, -10], [8, 5]],
-  [[-10, 36], [0, 40], [12, 40], [25, 35], [35, 31], [40, 15], [50, 15], [60, 25], [75, 10], [95, 10], [100, 1], [105, 5], [120, 15], [130, -5], [140, 10], [140, 35], [120, 40], [105, 20], [110, 35], [120, 37], [130, 35], [140, 50], [170, 60], [170, 70], [140, 75], [100, 75], [60, 70], [30, 70], [10, 60], [0, 65], [-5, 60], [-10, 40]],
-  [[68, 23], [73, 8], [79, 10], [88, 22]],
-  [[98, 20], [103, 1], [108, 10], [105, 20]],
-  [[113, -22], [113, -15], [130, -10], [143, -10], [153, -25], [150, -38], [140, -38], [115, -34]],
-  [[-60, 60], [-40, 60], [-30, 70], [-35, 83], [-70, 75]],
-  [[130, 30], [140, 35], [145, 45], [140, 40]],
-  [[43, -25], [50, -15], [47, -12], [43, -20]]
+  // North America
+  [[-168, 65], [-160, 68], [-150, 70], [-130, 72], [-110, 72], [-90, 74], [-70, 75], [-60, 70], [-50, 60], [-55, 48], [-60, 42], [-70, 42], [-80, 25], [-98, 16], [-105, 20], [-118, 30], [-125, 40], [-125, 55], [-140, 60], [-165, 60]],
+  // South America
+  [[-80, 12], [-74, 10], [-65, 8], [-55, -2], [-40, -6], [-35, -7], [-40, -22], [-62, -42], [-72, -56], [-76, -53], [-72, -40], [-80, -20], [-82, -5]],
+  // Eurasia (Europe + Asia with high-detail Red Sea, Arabia, India, and Indochina)
+  [
+    [-10, 36], [-8, 43], [0, 46], [5, 49], [10, 58], [20, 65], [30, 70], // Europe / Siberia
+    [40, 73], [60, 73], [80, 75], [100, 77], [120, 75], [140, 72], [160, 70], [180, 65], // North Coast
+    [175, 60], [160, 52], [142, 43], [142, 40], [128, 37], [124, 30], [120, 22], // East Asia / China
+    [109, 15], [105, 8], [101, 2], [105, 8], [109, 15], // Indochina / SE Asia
+    [96, 16], [90, 22], [88, 22], [80, 13], [79, 9], [72, 8], [72, 20], [68, 24], // India / Sri Lanka / West Coast
+    [62, 25], [58, 25], [52, 28], [48, 30], // Persian Gulf
+    [60, 23], [58, 15], [50, 12], [45, 12], [35, 15], [35, 28], // Arabian Peninsula
+    [33, 26], [32, 20], [35, 15], // Red Sea Coast
+    [30, 31], [35, 31], [40, 40], [30, 45], [20, 40], [10, 42], [0, 40] // Mediterranean
+  ],
+  // Africa (High detail coastlines, Horn of Africa)
+  [
+    [-17, 32], [-15, 34], [-5, 36], [5, 36], [10, 37], [20, 32], [30, 31], [32, 30],
+    [32, 25], [36, 20], [43, 12], // Red Sea Coast
+    [51, 11], [50, 5], [45, 0], // Horn of Africa
+    [40, -10], [38, -20], [34, -30], [30, -34], // East Coast
+    [20, -35], [18, -34], // South Tip
+    [12, -25], [8, -15], [4, -5], [4, 5], [9, 5], [8, 10], [-10, 10], [-15, 15], [-17, 20], [-17, 32] // West Coast
+  ],
+  // Australia (Realistic mainland)
+  [[113, -22], [113, -15], [122, -12], [131, -11], [137, -13], [144, -13], [152, -24], [150, -37], [138, -38], [115, -34]],
+  // Greenland
+  [[-60, 60], [-45, 60], [-30, 68], [-35, 83], [-70, 76]],
+  // Madagascar
+  [[43, -25], [49, -15], [51, -12], [47, -12], [43, -20]],
+  // Great Britain / Ireland
+  [[-10, 50], [-8, 55], [-5, 58], [-2, 55], [-2, 50]]
 ];
 
 const createEarthTextures = () => {
@@ -29,7 +52,7 @@ const createEarthTextures = () => {
   lightsCanvas.height = 1024;
   const lightsCtx = lightsCanvas.getContext('2d')!;
 
-  mapCtx.fillStyle = '#05090e';
+  mapCtx.fillStyle = '#030816'; // Dark blue ocean base
   mapCtx.fillRect(0, 0, 2048, 1024);
 
   lightsCtx.fillStyle = '#000000';
@@ -46,12 +69,8 @@ const createEarthTextures = () => {
     }
     mapCtx.closePath();
 
-    mapCtx.fillStyle = '#0c1612';
+    mapCtx.fillStyle = '#10b981'; // Green land mask
     mapCtx.fill();
-
-    mapCtx.lineWidth = 1;
-    mapCtx.strokeStyle = '#12241d';
-    mapCtx.stroke();
   });
 
   const isPointInPolygon = (x: number, y: number, vs: [number, number][]) => {
@@ -65,6 +84,7 @@ const createEarthTextures = () => {
     return inside;
   };
 
+  // Generate realistic cities cluster points on land
   for (let i = 0; i < 2000; i++) {
     const lon = Math.random() * 360 - 180;
     const lat = Math.random() * 180 - 90;
@@ -214,7 +234,8 @@ export const EarthGlobe: React.FC<{
 }> = ({ earthTextures }) => {
   const { scrollYProgress } = useScrollEngine();
   const globeRef = useRef<THREE.Mesh>(null);
-  const cloudsRef = useRef<THREE.Mesh>(null);
+  const clouds1Ref = useRef<THREE.Mesh>(null);
+  const clouds2Ref = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
 
   const lightDirection = useMemo(() => new THREE.Vector3(3.5, 1.8, 3.5).normalize(), []);
@@ -231,20 +252,53 @@ export const EarthGlobe: React.FC<{
     vertexShader: `
       varying vec2 vUv;
       varying vec3 vNormal;
+      varying vec3 vPosition;
       void main() {
         vUv = uv;
         vNormal = normalize(normalMatrix * normal);
+        vPosition = position;
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
       }
     `,
     fragmentShader: `
       varying vec2 vUv;
       varying vec3 vNormal;
+      varying vec3 vPosition;
       uniform sampler2D uMap;
       uniform sampler2D uLights;
       uniform vec3 uLightDirection;
       uniform float uTime;
       uniform float uScroll;
+
+      // Fractional Brownian Motion for procedural landmass detailing
+      float hash(vec3 p) {
+        p = fract(p * 0.3183099 + vec3(0.1, 0.1, 0.1));
+        p *= 17.0;
+        return fract(p.x * p.y * p.z * (p.x + p.y + p.z));
+      }
+      
+      float noise(vec3 x) {
+        vec3 p = floor(x);
+        vec3 f = fract(x);
+        f = f*f*(3.0-2.0*f);
+        
+        return mix(mix(mix(hash(p+vec3(0,0,0)), hash(p+vec3(1,0,0)),f.x),
+                       mix(hash(p+vec3(0,1,0)), hash(p+vec3(1,1,0)),f.x),f.y),
+                   mix(mix(hash(p+vec3(0,0,1)), hash(p+vec3(1,0,1)),f.x),
+                       mix(hash(p+vec3(0,1,1)), hash(p+vec3(1,1,1)),f.x),f.y),f.z);
+      }
+
+      float fbm(vec3 p) {
+        float v = 0.0;
+        float a = 0.5;
+        for (int i = 0; i < 4; ++i) {
+          v += a * noise(p);
+          p = p * 2.5;
+          a *= 0.5;
+        }
+        return v;
+      }
+
       void main() {
         vec3 normal = normalize(vNormal);
         vec3 lightDir = normalize(uLightDirection);
@@ -252,18 +306,80 @@ export const EarthGlobe: React.FC<{
         float diff = dot(normal, lightDir);
         float dayFactor = smoothstep(-0.15, 0.15, diff);
         
-        vec3 dayColor = texture2D(uMap, vUv).rgb;
+        // High-fidelity displacement mapping for organic shorelines
+        vec3 displacementDir = vec3(vPosition.x * 2.0, vPosition.y * 2.0, vPosition.z * 2.0);
+        float shorelineDetail = fbm(displacementDir * 5.0) * 0.012;
+        vec2 warpedUv = vUv + vec2(shorelineDetail, shorelineDetail * 0.5);
         
-        // Hope emerges: land vegetation blooms emerald as we scroll to the end
-        vec3 vegetationBloom = vec3(0.04, 0.18, 0.09) * dayColor.g; // enrich based on existing green channel density
-        dayColor = mix(dayColor, dayColor + vegetationBloom, uScroll);
+        // Lookup mask
+        vec4 texColor = texture2D(uMap, warpedUv);
+        float landValue = texColor.g;
+        bool isLand = landValue > 0.4;
         
-        vec3 nightColor = texture2D(uLights, vUv).rgb;
+        vec3 dayColor;
         
-        float flicker = 1.0 + 0.18 * sin(uTime * 4.0 + vUv.x * 250.0) * cos(uTime * 3.2 + vUv.y * 180.0);
-        nightColor *= flicker * 1.6;
+        // Perturb normals to simulate mountain height relief and casting shadows
+        vec3 perturbedNormal = normal;
+        if (isLand) {
+          float bump = fbm(vPosition * 22.0) * 0.15;
+          perturbedNormal = normalize(normal + vec3(bump, bump * 0.5, bump * 0.5));
+        }
+        float shadowDiff = max(dot(perturbedNormal, lightDir), 0.0);
         
-        vec3 finalColor = mix(nightColor, dayColor, dayFactor);
+        if (isLand) {
+          // NASA style terrain transitions (forest green, grassland yellow, rocky brown, Sahara sand)
+          float n = fbm(vPosition * 7.5);
+          
+          vec3 forest = vec3(0.03, 0.15, 0.07); // Muted satellite vegetation
+          vec3 desert = vec3(0.50, 0.42, 0.30); // Sandy dust desert
+          vec3 earth = vec3(0.22, 0.15, 0.09);  // Mountain soil
+          
+          dayColor = mix(forest, earth, n);
+          dayColor = mix(dayColor, desert, smoothstep(0.52, 0.78, n));
+          
+          // Apply sand beach border along shorelines
+          if (landValue < 0.48) {
+            vec3 beachColor = vec3(0.48, 0.43, 0.34);
+            dayColor = mix(beachColor, dayColor, smoothstep(0.40, 0.48, landValue));
+          }
+          
+          // Relieve shadow highlights
+          dayColor *= 0.75 + 0.3 * shadowDiff;
+          
+          // Green vegetation bloom timeline
+          float bloomFactor = smoothstep(0.5, 1.0, uScroll);
+          vec3 vegetationBloom = vec3(0.01, 0.32, 0.10) * n;
+          dayColor = mix(dayColor, dayColor + vegetationBloom, bloomFactor);
+        } else {
+          // Ocean depth mapping (shallow coastline turquoise shelves vs deep ocean trenches)
+          float depthFactor = fbm(vPosition * 5.0);
+          vec3 deepOcean = vec3(0.010, 0.035, 0.12);
+          vec3 shallowShelf = vec3(0.035, 0.14, 0.20);
+          
+          vec3 oceanBase = mix(shallowShelf, deepOcean, smoothstep(0.18, 0.55, depthFactor));
+          
+          // Specular sunlight reflection on water surface
+          vec3 viewDir = vec3(0.0, 0.0, 1.0);
+          vec3 halfDir = normalize(lightDir + viewDir);
+          float spec = pow(max(dot(normal, halfDir), 0.0), 45.0);
+          vec3 specularColor = vec3(0.68, 0.85, 1.0) * spec * 0.52;
+          
+          dayColor = oceanBase + specularColor;
+        }
+        
+        vec3 nightColor = texture2D(uLights, warpedUv).rgb;
+        
+        // Scene 4 (Exchange): Small city light highlights appear and flicker
+        float highlightsFactor = smoothstep(0.35, 0.70, uScroll);
+        float flicker = 1.0 + 0.25 * sin(uTime * 5.0 + vUv.x * 300.0) * cos(uTime * 3.8 + vUv.y * 220.0);
+        nightColor *= flicker * mix(0.8, 2.5, highlightsFactor);
+        
+        // Soft red-orange Rayleigh scattering sunrise glow on terminator
+        float termGlowWidth = 0.09;
+        float termBorder = 1.0 - abs(diff);
+        vec3 sunriseGlow = vec3(0.90, 0.38, 0.06) * pow(termBorder, 9.0) * smoothstep(-termGlowWidth, termGlowWidth, diff);
+        
+        vec3 finalColor = mix(nightColor, dayColor, dayFactor) + sunriseGlow;
         gl_FragColor = vec4(finalColor, 1.0);
       }
     `
@@ -319,14 +435,14 @@ export const EarthGlobe: React.FC<{
         float dayFactor = smoothstep(-0.25, 0.25, diff);
         
         vec2 uv = vUv * 4.5;
-        uv.x -= uTime * 0.007;
-        uv.y += sin(uTime * 0.002) * 0.04;
+        uv.x -= uTime * 0.006;
+        uv.y += sin(uTime * 0.002) * 0.03;
         
-        float d = fbm(uv + fbm(uv + uTime * 0.012));
-        float density = smoothstep(0.40, 0.76, d);
+        float d = fbm(uv + fbm(uv + uTime * 0.01));
+        float density = smoothstep(0.35, 0.72, d);
         
-        vec3 litCloudColor = vec3(0.95, 0.96, 0.98) * mix(0.04, 1.0, dayFactor);
-        gl_FragColor = vec4(litCloudColor, density * 0.50);
+        vec3 litCloudColor = vec3(0.96, 0.97, 0.99) * mix(0.03, 1.0, dayFactor);
+        gl_FragColor = vec4(litCloudColor, density * 0.58);
       }
     `
   }), [lightDirection]);
@@ -355,13 +471,16 @@ export const EarthGlobe: React.FC<{
         vec3 normal = normalize(vNormal);
         vec3 viewDir = normalize(vViewPosition);
         
-        // Atmosphere glows slightly brighter and cleaner as scroll progress increases
-        float baseIntensity = 3.8 - (uScroll * 0.4);
-        float intensity = pow(1.0 - max(0.0, dot(normal, viewDir)), baseIntensity);
+        // Premium scatter depth intensity
+        float intensity = pow(1.0 - max(0.0, dot(normal, viewDir)), 4.5);
         
-        // Slight color shift towards a clean emerald/teal atmosphere glow
-        vec3 atmosphereTint = mix(uGlowColor, vec3(0.06, 0.32, 0.20), uScroll);
-        gl_FragColor = vec4(atmosphereTint, intensity * (0.80 + uScroll * 0.12));
+        // Restored gorgeous glowing emerald/green/teal atmosphere shell requested by user
+        vec3 baseRimColor = vec3(0.04, 0.40, 0.20);   // Emerald green base
+        vec3 healthyRimColor = vec3(0.08, 0.65, 0.35); // Bright rich emerald green-teal
+        
+        vec3 atmosphereTint = mix(baseRimColor, healthyRimColor, uScroll);
+        
+        gl_FragColor = vec4(atmosphereTint, intensity * 0.95);
       }
     `
   }), [glowColor]);
@@ -378,11 +497,18 @@ export const EarthGlobe: React.FC<{
         if (mat.uniforms.uScroll) mat.uniforms.uScroll.value = scrollVal;
       }
     }
-    if (cloudsRef.current && cloudsRef.current.material) {
-      cloudsRef.current.rotation.y = elapsed * 0.006;
-      const mat = cloudsRef.current.material as THREE.ShaderMaterial;
+    if (clouds1Ref.current && clouds1Ref.current.material) {
+      clouds1Ref.current.rotation.y = elapsed * 0.005;
+      const mat = clouds1Ref.current.material as THREE.ShaderMaterial;
       if (mat.uniforms && mat.uniforms.uTime) {
         mat.uniforms.uTime.value = elapsed;
+      }
+    }
+    if (clouds2Ref.current && clouds2Ref.current.material) {
+      clouds2Ref.current.rotation.y = -elapsed * 0.003; // Counter rotate for dual cloud parallax
+      const mat = clouds2Ref.current.material as THREE.ShaderMaterial;
+      if (mat.uniforms && mat.uniforms.uTime) {
+        mat.uniforms.uTime.value = elapsed + 50.0;
       }
     }
     if (atmosphereRef.current && atmosphereRef.current.material) {
@@ -404,7 +530,8 @@ export const EarthGlobe: React.FC<{
         />
       </mesh>
 
-      <mesh ref={cloudsRef} scale={[1.012, 1.012, 1.012]}>
+      {/* Cloud Layer 1 */}
+      <mesh ref={clouds1Ref} scale={[1.008, 1.008, 1.008]}>
         <sphereGeometry args={[1, 64, 64]} />
         <shaderMaterial
           uniforms={cloudsShader.uniforms}
@@ -415,6 +542,19 @@ export const EarthGlobe: React.FC<{
         />
       </mesh>
 
+      {/* Cloud Layer 2 (Dual layer parallax) */}
+      <mesh ref={clouds2Ref} scale={[1.016, 1.016, 1.016]}>
+        <sphereGeometry args={[1, 64, 64]} />
+        <shaderMaterial
+          uniforms={cloudsShader.uniforms}
+          vertexShader={cloudsShader.vertexShader}
+          fragmentShader={cloudsShader.fragmentShader}
+          transparent
+          depthWrite={false}
+        />
+      </mesh>
+
+      {/* Atmosphere shell - Restored emerald green scatter */}
       <mesh ref={atmosphereRef} scale={[1.026, 1.026, 1.026]}>
         <sphereGeometry args={[1, 64, 64]} />
         <shaderMaterial
@@ -435,21 +575,26 @@ export const EarthSceneContent: React.FC<{
 }> = ({ cursorRef }) => {
   const earthTextures = useMemo(() => createEarthTextures(), []);
 
+  // Increased molecule count to 160 for a rich, dense, high-fidelity atmosphere
   const moleculesData = useMemo(() => {
     const data = [];
-    for (let i = 0; i < 22; i++) {
+    for (let i = 0; i < 160; i++) {
+      const rand = Math.random();
+      const type = rand < 0.45 ? 'CO2' : rand < 0.75 ? 'CH4' : rand < 0.90 ? 'CO' : 'Cluster';
+      
       data.push({
         id: i,
+        type: type as 'CO2' | 'CH4' | 'CO' | 'Cluster',
         position: [
-          (Math.random() - 0.5) * 8.5,
-          Math.random() * 4.0 - 0.5,
-          (Math.random() - 0.5) * 3.5
+          (Math.random() - 0.5) * 18.0, // Expanded horizontal span
+          (Math.random() * 22.0) - 13.0, // Expanded vertical span
+          (Math.random() - 0.5) * 8.5
         ] as [number, number, number],
-        scale: Math.random() * 0.11 + 0.07,
+        scale: Math.random() * 0.45 + 0.15, // Broad scale variation for balanced 3D parallax
         rotationSpeed: [
-          (Math.random() - 0.5) * 0.008,
-          (Math.random() - 0.5) * 0.008,
-          (Math.random() - 0.5) * 0.008
+          (Math.random() - 0.5) * 0.0015,
+          (Math.random() - 0.5) * 0.0015,
+          (Math.random() - 0.5) * 0.0015
         ] as [number, number, number]
       });
     }
@@ -466,15 +611,17 @@ export const EarthSceneContent: React.FC<{
           position={m.position}
           scale={m.scale}
           rotationSpeed={m.rotationSpeed}
+          type={m.type}
           cursorRef={cursorRef}
         />
       ))}
 
       <CO2Molecule
         isPulse
+        type="CO2"
         position={[0.2, 2.1, 0.5]}
-        scale={0.20}
-        rotationSpeed={[0.003, 0.005, 0.001]}
+        scale={0.18}
+        rotationSpeed={[0.0008, 0.0012, 0.0004]}
         cursorRef={cursorRef}
       />
     </>
