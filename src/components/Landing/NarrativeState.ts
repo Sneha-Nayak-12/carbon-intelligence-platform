@@ -9,44 +9,51 @@ export interface LifecycleStep {
 export const stepsData: LifecycleStep[] = [
   {
     id: 1,
-    label: "01 / Capture & Conversion",
-    title: "Biomass to Biochar",
-    sub: "Permanently sealing carbon inside structured solid carbon.",
-    description: "Agricultural crop residues that would otherwise rot or be burned are subjected to oxygen-free heating (pyrolysis). Instead of releasing CO₂ back into the atmosphere, the carbon is converted into biochar—a stable, porous charcoal-like material that locks carbon away for over 1,000 years."
+    label: "01 / Identify",
+    title: "Project Discovery",
+    sub: "Targeting high-capacity carbon removal sinks.",
+    description: "Sovereign land assessments, agricultural residue supplies, and basaltic deposit layouts are cataloged. OCEAN analytics select high-yield locations for maximum permanence stability."
   },
   {
     id: 2,
-    label: "02 / Verification",
-    title: "The Digital MRV Audit",
-    sub: "Third-party validation of ecological physical existence.",
-    description: "Before any credit can be generated, remote sensing, soil sampling, and kiln sensor telemetry are audited. Verification bodies (like Puro.earth and Verra) review documentation to prove the physical biochar was buried or mixed into soil, guaranteeing carbon permanence."
+    label: "02 / Develop",
+    title: "Methodology Alignment",
+    sub: "Registering baseline carbon project blueprints.",
+    description: "Project developers build the technical baseline parameters, logging kiln architectures, processing capacities, and baseline soil metrics to fit registry protocols (GS/Puro/Verra)."
   },
   {
     id: 3,
-    label: "03 / Credit Minting",
-    title: "Cryptographic Issuance",
-    sub: "Minting audited tons into digital registry ledgers.",
-    description: "Once verification is complete, the registry mints carbon credits directly. Each credit represents exactly 1 metric ton of CO₂ permanently removed. Stamped with its specific project ID, batch number, verifier signature, and country coordinate details."
+    label: "03 / Monitor",
+    title: "Real-Time Telemetry Sync",
+    sub: "Gathering continuous sensor feeds and canopy logs.",
+    description: "IoT monitors track temperatures and gas ratios on-site, while satellite canopy mapping and core soil sample deltas establish permanent physical verification data."
   },
   {
     id: 4,
-    label: "04 / Marketplace Listing",
-    title: "Ecosystem Indexing",
-    sub: "Integrating removal batches into corporate catalogues.",
-    description: "The newly minted batch is indexed on the Carbon Intelligence Platform. Corporate buyers can search and filter batches based on project methodology, geographic area, co-benefits rating, and exact pricing/permanence scores."
+    label: "04 / Verify",
+    title: "MRV Auditor Sign-Off",
+    sub: "Validating carbon captures via third-party validators.",
+    description: "Auditors verify sensor logs and delivery manifests against methodology protocols. Cryptographic compliance stamps are signed upon successful MRV audits."
   },
   {
     id: 5,
-    label: "05 / Corporate Purchase",
-    title: "The Procurement Settlement",
-    sub: "Bridging capital to clean technology developers.",
-    description: "Enterprises purchase the credits to cover audited Scope 1, 2, or 3 emissions liabilities. Funds are transferred securely, locking the batch and sending capital directly to carbon removal developers to finance further project capacity."
+    label: "05 / Issue",
+    title: "Registry Minting",
+    sub: "Securing credits on blockchain-backed registries.",
+    description: "Upon audit approval, carbon removal certificates are minted. Each credit represents exactly 1 metric ton of CO₂e captured, tagged with a unique registry block address."
   },
   {
     id: 6,
-    label: "06 / Permanent Retirement",
-    title: "Locked & Retired",
-    sub: "Permanently taking the credit out of circulation.",
-    description: "To officially claim carbon removal against sustainability goals, the credits are retired. This cryptographically locks the credit in the public registry forever. Once retired, it cannot be resold, moved, or double-counted."
+    label: "06 / Trade",
+    title: "B2B Escrow Clearing",
+    sub: "Clearing transactions in the institutional marketplace.",
+    description: "Corporates buy and trade verified batches held in registry escrow. The clearinghouse automates funding settlements directly to clean tech developers."
+  },
+  {
+    id: 7,
+    label: "07 / Retire & Impact",
+    title: "Permanent Lock & Seal",
+    sub: "Permanently retiring assets to offset liability scopes.",
+    description: "Credits are retired to reconcile enterprise scope logs. Retired blocks are locked in the public ledger forever, preventing double-claiming."
   }
 ];

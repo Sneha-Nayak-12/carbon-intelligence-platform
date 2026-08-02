@@ -15,7 +15,29 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
-          emerald: "#0F766E",
+        },
+        ocean: {
+          bg: {
+            primary: "#07151C",
+            secondary: "#0B202B",
+            elevated: "#0C2533",
+          },
+          surface: "#123C4D",
+          brand: {
+            DEFAULT: "#1F6E83",
+            hover: "#26869F",
+          },
+          premium: "#8DE5E9",
+          border: "#1F6E83/40",
+          divider: "#123C4D/50",
+          success: "#2CB587",
+          warning: "#BA873C",
+          error: "#AD3E3E",
+        },
+        text: {
+          primary: "#F5F7F8",
+          secondary: "#8DE5E9",
+          muted: "#9CB3C2",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
@@ -48,16 +70,18 @@ export default {
       },
       fontFamily: {
         sans: ["Inter", "sans-serif"],
+        display: ["Manrope", "sans-serif"],
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        sm: "4px",
+        md: "6px",
+        lg: "8px",
+        xl: "12px",
       },
       boxShadow: {
-        soft: "0 2px 8px -1px rgba(15, 23, 42, 0.04), 0 1px 3px -1px rgba(15, 23, 42, 0.02)",
-        premium: "0 4px 20px -2px rgba(15, 23, 42, 0.06), 0 2px 6px -1px rgba(15, 23, 42, 0.03)",
-        glass: "0 8px 32px 0 rgba(15, 23, 42, 0.04)",
+        'ocean-sm': "0 2px 8px rgba(0,0,0,0.3)",
+        'ocean-md': "0 8px 16px -4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.02)",
+        'ocean-lg': "0 16px 32px -8px rgba(0,0,0,0.6)",
       },
     },
   },

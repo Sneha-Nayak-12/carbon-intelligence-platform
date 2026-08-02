@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -6,149 +6,175 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%; /* #F8FAFC */
-    --foreground: 222.2 84% 4.9%;
+    /* System default overrides to dark theme matching OCEAN Design System v1.2 */
+    --background: 204 45% 5%; /* #080E13 */
+    --foreground: 210 15% 95%; /* #F5F7F8 */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 204 30% 9%; /* #0E171E */
+    --card-foreground: 210 15% 95%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 204 30% 9%;
+    --popover-foreground: 210 15% 95%;
 
-    --primary: 174 84% 26%; /* #0F766E - Deep Emerald Green */
-    --primary-foreground: 210 40% 98%;
+    --primary: 194 48% 34%; /* #2D6F82 */
+    --primary-foreground: 210 15% 95%;
 
-    --secondary: 221.2 83.2% 53.3%; /* #2563EB - Blue */
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 204 20% 20%; /* #1D2D38 */
+    --secondary-foreground: 210 10% 75%;
 
-    --accent: 142 70% 45%; /* #22C55E - Fresh Green */
-    --accent-foreground: 210 40% 98%;
+    --accent: 192 50% 65%; /* #6EB0C2 */
+    --accent-foreground: 204 45% 5%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 204 20% 14%; /* #121E26 */
+    --muted-foreground: 210 8% 55%;
 
-    --destructive: 0 84.2% 60.2%; /* #EF4444 - Red */
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 50% 46%; /* #AD3E3E */
+    --destructive-foreground: 210 15% 95%;
 
-    --warning: 38 92% 50%; /* #F59E0B - Amber */
-    --warning-foreground: 222.2 47.5% 11.2%;
+    --warning: 38 55% 48%; /* #BA873C */
+    --warning-foreground: 204 45% 5%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 174 84% 26%;
+    --border: 204 20% 20%; /* #1D2D38 */
+    --input: 204 20% 20%;
+    --ring: 194 48% 34%;
 
-    --radius: 12px;
+    --radius: 8px;
   }
 }
 
 @layer base {
   * {
-    @apply border-slate-100;
+    @apply border-ocean-divider;
   }
   body {
-    @apply bg-[#F8FAFC] text-slate-900 font-sans antialiased selection:bg-[#0F766E]/10 selection:text-[#0F766E];
+    @apply bg-ocean-bg-primary text-text-primary font-sans antialiased selection:bg-ocean-brand/20 selection:text-ocean-premium;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
 
-/* Custom scrollbars */
+/* Custom scrollbars matching dark theme */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-200 rounded-full hover:bg-slate-300;
+  @apply bg-ocean-border rounded-full hover:bg-ocean-brand/50;
 }
 
-/* Premium Typography Helper Classes */
+/* Typography Helpers */
 .font-display {
-  font-family: 'Inter', sans-serif;
-  letter-spacing: -0.02em;
-  font-weight: 800;
-}
-
-.font-heading {
-  font-family: 'Inter', sans-serif;
+  font-family: 'Manrope', sans-serif;
   letter-spacing: -0.015em;
-  font-weight: 700;
-}
-
-.font-subheading {
-  font-family: 'Inter', sans-serif;
-  letter-spacing: -0.01em;
-  font-weight: 600;
-}
-
-/* Glassmorphism utility */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.75);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(241, 245, 249, 0.8);
-}
-
-.font-serif-display {
-  font-family: 'Fraunces', Georgia, serif;
 }
 
 .font-editorial {
-  font-family: 'Fraunces', Georgia, serif;
+  font-family: 'Manrope', sans-serif;
+  letter-spacing: -0.015em;
 }
 
-/* Premium Motion and Utility Classes */
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
+/* Signature Motifs */
+/* 1. Coordinate Crosshairs and Grid */
+.motif-coords {
+  background-size: 40px 40px;
+  background-image: 
+    radial-gradient(circle, rgba(45, 111, 130, 0.05) 1px, transparent 1px);
 }
 
-@keyframes pulseGlow {
-  0% { opacity: 0.3; transform: scale(1.0) translate(0px, 0px); }
-  50% { opacity: 0.6; transform: scale(1.08) translate(10px, -5px); }
-  100% { opacity: 0.3; transform: scale(1.0) translate(0px, 0px); }
+/* 2. Bathymetric Contours (Layered wavy lines) */
+.motif-bathymetry {
+  background: radial-gradient(ellipse at 50% 100%, rgba(45, 111, 130, 0.04) 0%, transparent 70%);
 }
 
-@keyframes driftParticles {
-  0% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-15px) rotate(180deg); }
-  100% { transform: translateY(0px) rotate(360deg); }
+/* 3. Ocean Currents (Parallel lines) */
+.motif-currents {
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 19px,
+    rgba(45, 111, 130, 0.02) 19px,
+    rgba(45, 111, 130, 0.02) 20px
+  );
 }
 
-.animate-float-slow {
-  animation: float 8s ease-in-out infinite;
+/* Reusable Container & Elevations */
+.ocean-card {
+  @apply bg-ocean-bg-secondary border border-ocean-border rounded-lg shadow-ocean-md transition-all duration-200;
+}
+.ocean-card:hover {
+  @apply border-ocean-brand -translate-y-[1px];
 }
 
-.animate-float-medium {
-  animation: float 5.5s ease-in-out infinite;
+.ocean-input {
+  @apply bg-ocean-bg-primary border border-ocean-border text-text-primary rounded-md px-3 py-2 text-sm focus:border-ocean-brand focus:ring-1 focus:ring-ocean-brand/30 outline-none transition-all placeholder:text-text-secondary/40;
 }
 
-.animate-glow-slow {
-  animation: pulseGlow 12s ease-in-out infinite;
+.ocean-btn-primary {
+  @apply bg-ocean-brand text-text-primary font-medium px-4 py-2 rounded-md hover:bg-ocean-brand-hover active:scale-95 focus:ring-2 focus:ring-ocean-premium/50 outline-none transition-all disabled:bg-ocean-divider disabled:text-text-secondary/40 disabled:cursor-not-allowed;
 }
 
-.animate-drift-slow {
-  animation: driftParticles 25s linear infinite;
+.ocean-btn-secondary {
+  @apply bg-transparent border border-ocean-border text-text-primary font-medium px-4 py-2 rounded-md hover:bg-white/[0.02] hover:border-ocean-brand active:scale-95 transition-all;
 }
 
-/* Apple/VisionPro-style Glassmorphism overlays */
-.premium-glass {
-  background: rgba(8, 18, 16, 0.38);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(16, 185, 129, 0.12);
-  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.8),
-              inset 0 1px 1px 0 rgba(255, 255, 255, 0.05);
+.ocean-btn-ghost {
+  @apply bg-transparent text-text-secondary font-medium px-4 py-2 rounded-md hover:bg-white/[0.02] hover:text-text-primary active:scale-95 transition-all;
 }
 
-.premium-glass-light {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  box-shadow: 0 30px 70px -10px rgba(0, 0, 0, 0.8),
-              inset 0 1px 1px 0 rgba(255, 255, 255, 0.08);
+/* Sunrise Ocean Caustics & Ambient Light Ray Overlays */
+.caustics-overlay {
+  background: radial-gradient(circle at 50% -20%, rgba(141, 229, 233, 0.12) 0%, rgba(31, 110, 131, 0.04) 45%, transparent 80%);
+  pointer-events: none;
+}
+
+@keyframes currents-drift {
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-10px) rotate(1deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+.ambient-currents {
+  animation: currents-drift 12s ease-in-out infinite;
+}
+
+/* Floating plankton/bubble particles */
+@keyframes bubble-drift {
+  0% { transform: translateY(0) translateX(0); opacity: 0.1; }
+  50% { transform: translateY(-40px) translateX(20px); opacity: 0.35; }
+  100% { transform: translateY(-80px) translateX(0); opacity: 0.1; }
+}
+
+.particles-drift {
+  background-image: 
+    radial-gradient(circle, rgba(141, 229, 233, 0.15) 1.5px, transparent 1.5px),
+    radial-gradient(circle, rgba(44, 181, 135, 0.1) 2.5px, transparent 2.5px);
+  background-size: 100px 150px, 160px 240px;
+  background-position: 0 0, 50px 80px;
+  animation: bubble-drift 24s linear infinite;
+  pointer-events: none;
+}
+
+/* Volumetric Ocean Light Rays filtering down */
+@keyframes beams-shift {
+  0% { background-position: 0% 50%; opacity: 0.4; }
+  50% { background-position: 100% 50%; opacity: 0.85; }
+  100% { background-position: 0% 50%; opacity: 0.4; }
+}
+
+.volumetric-beams {
+  background: linear-gradient(
+    115deg,
+    rgba(141, 229, 233, 0) 0%,
+    rgba(141, 229, 233, 0.015) 25%,
+    rgba(141, 229, 233, 0.06) 42%,
+    rgba(141, 229, 233, 0.02) 55%,
+    rgba(141, 229, 233, 0) 80%
+  );
+  background-size: 300% 300%;
+  animation: beams-shift 28s ease-in-out infinite;
+  mix-blend-mode: screen;
+  pointer-events: none;
 }
 

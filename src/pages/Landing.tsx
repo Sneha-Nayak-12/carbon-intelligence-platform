@@ -1,573 +1,820 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useTransform } from 'framer-motion';
-import { Canvas } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
-import * as THREE from 'three';
-import { Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Activity, CheckCircle } from 'lucide-react';
 
 import {
   ScrollEngineProvider,
   useScrollEngine,
-  CameraRig,
-  StarField,
-  NebulaBackground,
-  EarthSceneContent,
   UnifiedVisualProcessor,
-  HeroScene,
-  CaptureScene,
-  TransformationScene,
-  VerificationScene,
-  RegistryScene,
-  MarketplaceScene,
-  RetirementScene,
-  EcosystemScene,
-  FinaleScene,
-  logoVariants,
-  navItemVariants
 } from '../components/Landing';
 
+import { stepsData } from '../components/Landing/NarrativeState';
+
 // ==========================================
-// SOUND LAYER (Future Ready Ambient Drone)
+// BIG-SIZED EXACT DESIGN OCEAN LOGO FOR HERO
 // ==========================================
-const ambientSoundController = {
-  ctx: null as AudioContext | null,
-  oscillator: null as OscillatorNode | null,
-  gainNode: null as GainNode | null,
-  isInitialized: false,
-
-  init() {
-    if (this.isInitialized) return;
-    try {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
-      if (!AudioCtx) return;
-      this.ctx = new AudioCtx();
-      this.oscillator = this.ctx.createOscillator();
-      this.gainNode = this.ctx.createGain();
-
-      this.oscillator.type = 'sine';
-      this.oscillator.frequency.value = 55; // Deep 55Hz G-1 drone
-      this.gainNode.gain.value = 0.0;
-
-      this.oscillator.connect(this.gainNode);
-      this.gainNode.connect(this.ctx.destination);
-      this.isInitialized = true;
-    } catch (e) {
-      console.warn("AudioContext init failed", e);
-    }
-  },
-
-  play() {
-    this.init();
-    if (this.ctx && this.oscillator && this.gainNode) {
-      if (this.ctx.state === 'suspended') {
-        this.ctx.resume();
-      }
-      try {
-        this.oscillator.start();
-      } catch (e) { }
-      this.gainNode.gain.setTargetAtTime(0.08, this.ctx.currentTime, 2.5);
-    }
-  },
-
-  setIntensity(value: number) {
-    if (this.ctx && this.gainNode) {
-      const targetVolume = 0.08 + value * 0.06;
-      this.gainNode.gain.setTargetAtTime(targetVolume, this.ctx.currentTime, 0.4);
-    }
-  },
-
-  stop() {
-    if (this.ctx && this.gainNode) {
-      this.gainNode.gain.setTargetAtTime(0.0, this.ctx.currentTime, 1.2);
-    }
-  }
+const BigOceanLogo: React.FC = () => {
+  return (
+    <div className="flex flex-col items-start space-y-4 font-mono w-full max-w-sm">
+      <svg className="w-full h-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="ocean-hero-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#0B7A75" />
+            <stop offset="40%" stopColor="#1C8A83" />
+            <stop offset="100%" stopColor="#3B8E67" />
+          </linearGradient>
+        </defs>
+        {/* O with wave inside */}
+        <g>
+          <circle cx="35" cy="35" r="24" stroke="url(#ocean-hero-grad)" strokeWidth="7" fill="none" />
+          {/* Exact Crest Wave Design */}
+          <path d="M 15 42 Q 22 55 35 55 Q 48 55 53 45 Q 40 48 32 40 Q 25 32 15 42" fill="url(#ocean-hero-grad)" />
+          <path d="M 15 46 Q 23 57 35 57 Q 47 57 51 47" stroke="#F5F7F8" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.6" />
+          <path d="M 17 40 Q 24 49 32 49 Q 40 49 44 43" stroke="#8DE5E9" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.8" />
+        </g>
+        {/* C */}
+        <path d="M78 18 C70 18, 62 25, 62 35 C62 45, 70 52, 78 52" stroke="url(#ocean-hero-grad)" strokeWidth="7" strokeLinecap="round" fill="none" />
+        {/* E */}
+        <path d="M110 18 H95 V52 H110 M95 35 H106" stroke="url(#ocean-hero-grad)" strokeWidth="7" strokeLinecap="round" fill="none" />
+        {/* A with Leaf replacing crossbar */}
+        <g>
+          <path d="M122 52 L134 18 L146 52" stroke="url(#ocean-hero-grad)" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+          {/* Tilted Green Leaf with Veins and details */}
+          <g transform="translate(122, 34) rotate(15)">
+            <path d="M0 5 C5 -3, 20 -3, 28 5 C20 13, 5 13, 0 5 Z" fill="#2CB587" />
+            <path d="M0 5 Q14 5 28 5" stroke="#07151C" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
+            <path d="M4 3 C9 -1, 19 -1, 24 4" stroke="#F5F7F8" strokeWidth="0.8" strokeLinecap="round" fill="none" opacity="0.5" />
+          </g>
+        </g>
+        {/* N */}
+        <path d="M158 52 V18 L178 52 V18" stroke="url(#ocean-hero-grad)" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        {/* Subtext */}
+        <text x="2" y="72" fill="#EAEFF3" fontSize="9" fontFamily="monospace" letterSpacing="1.8" fontWeight="bold">CARBON INTELLIGENCE PLATFORM</text>
+      </svg>
+      
+      <div className="w-full border-t border-ocean-border/60 my-1" />
+      
+      <div className="w-full flex justify-between items-center text-[10px] text-ocean-premium font-bold tracking-widest">
+        <span>—</span>
+        <span>TRADE</span>
+        <span>•</span>
+        <span>DEVELOP</span>
+        <span>•</span>
+        <span>MEASURE</span>
+        <span>•</span>
+        <span>IMPACT</span>
+        <span>—</span>
+      </div>
+    </div>
+  );
 };
 
-const LandingContent: React.FC = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const stepRefs = useRef<HTMLDivElement[]>([]);
+// ==========================================
+// MOCK DATA FOR COMPLIANCE EXCHANGE
+// ==========================================
+const mockExchangeBatches = [
+  { id: 'OCN-24-001', project: 'Rajasthan Biochar Facility', area: 'Rajasthan, IN', price: 2.10, available: 10000, permanence: '1,000+ Yrs', verifier: 'Verra', rating: 'AAA' },
+  { id: 'OCN-24-002', project: 'Wayanad Agrochar Initiative', area: 'Kerala, IN', price: 2.35, available: 8500, permanence: '1,000+ Yrs', verifier: 'Puro.earth', rating: 'AA+' },
+  { id: 'OCN-24-003', project: 'Afforestation MP', area: 'Madhya Pradesh, IN', price: 1.95, available: 15000, permanence: '40+ Yrs', verifier: 'Verra', rating: 'AA' },
+  { id: 'OCN-24-004', project: 'Cookstove Bihar Clean Tech', area: 'Bihar, IN', price: 2.05, available: 5200, permanence: '10+ Yrs', verifier: 'Puro.earth', rating: 'A' },
+  { id: 'OCN-24-005', project: 'Deccan Weathering Deposit', area: 'Deccan, IN', price: 3.40, available: 3200, permanence: '10,000+ Yrs', verifier: 'Puro.earth', rating: 'AAA' },
+];
 
-  // Scene 4 Interactive Exchange Terminal State
-  const [activeExchangeTab, setActiveExchangeTab] = useState<'Biochar' | 'Basalt' | 'DAC'>('Biochar');
-  const [selectedExchangeBatch, setSelectedExchangeBatch] = useState<string | null>('COR-BIO-49');
+// ==========================================
+// MASTER PERSISTENT DASHBOARD PANEL
+// ==========================================
+interface MasterDashboardProps {
+  phase: 'boot' | 'workflow' | 'marketplace' | 'ai_sim' | 'network';
+  activeStep: number;
+  bootState: 'idle' | 'logging' | 'nodes' | 'active';
+  offsetPercentage: number;
+  batches: typeof mockExchangeBatches;
+  selectedBatch: string;
+  setSelectedBatch: (id: string) => void;
+  updatedRowId: string | null;
+}
+
+const MasterDashboard: React.FC<MasterDashboardProps> = ({
+  phase,
+  activeStep,
+  bootState,
+  offsetPercentage,
+  batches,
+  selectedBatch,
+  setSelectedBatch,
+  updatedRowId
+}) => {
+  const baseEmissions = 8500;
+  const totalOffset = (baseEmissions * offsetPercentage) / 100;
+  const netEmissions = baseEmissions - totalOffset;
+  const netZeroYear = offsetPercentage === 100 ? 2026 : Math.max(2050 - (offsetPercentage * 0.3), 2028).toFixed(0);
+
+  const getAIRecommendation = () => {
+    if (offsetPercentage < 40) return "Scope 1/2 liabilities remain largely unaddressed. We recommend establishing multi-year biochar off-take contracts immediately to satisfy compliance audits.";
+    if (offsetPercentage < 80) return "Substantial progress. To minimize compliance exposure, shift an additional 20% allocation into Deccan basalt weathering to stabilize average permanence.";
+    return "Complete net-zero alignment achieved. Digital portfolio is 100% verified with an average credit permanence rating of 4,200 years.";
+  };
+
+  const activeBatch = batches.find(b => b.id === selectedBatch) || batches[0];
+
+  return (
+    <div 
+      className="w-full h-full relative p-[1px] rounded-lg overflow-hidden shadow-ocean-md font-mono text-[11px] text-text-secondary select-none bg-cover bg-center"
+      style={{ backgroundImage: "linear-gradient(rgba(12, 37, 51, 0.94), rgba(12, 37, 51, 0.97)), url('/bathymetry.png')" }}
+    >
+      
+      {/* 1. BOOT PHASE */}
+      {phase === 'boot' && (
+        <div className="h-full flex flex-col justify-between p-5 motif-coords relative">
+          {/* Sonar sweep overlay */}
+          <div className="absolute right-6 top-16 w-24 h-24 opacity-25 pointer-events-none select-none">
+            <svg className="w-full h-full animate-[spin_12s_linear_infinite]" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="45" stroke="#8DE5E9" strokeWidth="0.8" strokeDasharray="3 6" fill="none" />
+              <circle cx="50" cy="50" r="30" stroke="#1F6E83" strokeWidth="0.8" fill="none" />
+              <circle cx="50" cy="50" r="15" stroke="#2CB587" strokeWidth="0.8" strokeDasharray="2 2" fill="none" />
+              <line x1="50" y1="5" x2="50" y2="95" stroke="#1F6E83" strokeWidth="0.5" />
+              <line x1="5" y1="50" x2="95" y2="50" stroke="#1F6E83" strokeWidth="0.5" />
+            </svg>
+          </div>
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b border-ocean-divider pb-2.5">
+              <span className="text-text-primary font-bold tracking-wider text-[10px]">OCEAN_DASHBOARD_LIVE</span>
+              <span className="text-[9px] text-ocean-premium font-bold">STATE: {bootState.toUpperCase()}</span>
+            </div>
+            
+            {bootState === 'idle' && (
+              <div className="py-20 text-center text-text-muted">
+                <span>[AWAITING_BOOT_SEQUENCE]</span>
+              </div>
+            )}
+
+            {(bootState === 'logging' || bootState === 'nodes' || bootState === 'active') && (
+              <div className="space-y-1.5 text-[10px] text-text-muted">
+                <div>[SYS] Initializing registry sync protocol...</div>
+                <div>[SYS] Connection established with Puro.earth catalog node #18</div>
+                {bootState >= 'nodes' && <div className="text-ocean-premium">[SYS] Connected to Verra ledger endpoint (RJ-KILN-04)</div>}
+                {bootState >= 'nodes' && <div className="text-ocean-premium">[SYS] Compliance escrow vault signature: SECURE</div>}
+              </div>
+            )}
+
+            {bootState === 'active' && (
+              <motion.div 
+                initial={{ opacity: 0, y: 5 }} 
+                animate={{ opacity: 1, y: 0 }} 
+                className="grid grid-cols-2 gap-3 pt-3"
+              >
+                <div className="bg-ocean-bg-primary border border-ocean-border p-3 rounded-md">
+                  <span className="text-[9px] text-text-muted block uppercase">TOTAL PROJECTS</span>
+                  <span className="text-base text-text-primary font-bold">48 Active</span>
+                </div>
+                <div className="bg-ocean-bg-primary border border-ocean-border p-3 rounded-md">
+                  <span className="text-[9px] text-text-muted block uppercase">VALUE TRADED</span>
+                  <span className="text-base text-ocean-premium font-bold">$18.7M</span>
+                </div>
+              </motion.div>
+            )}
+          </div>
+
+          {bootState === 'active' && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="h-28 bg-ocean-bg-primary border border-ocean-border rounded-md p-3 relative overflow-hidden"
+            >
+              <div className="flex justify-between text-[9px] text-text-muted">
+                <span>CREDIT GENERATION TREND</span>
+                <span className="text-text-primary font-bold">1.24M tCO₂e</span>
+              </div>
+              <svg className="w-full h-16 absolute bottom-1 left-0 right-0 px-2" viewBox="0 0 100 30" fill="none">
+                <path d="M0 25 Q15 5, 30 18 T60 8 T90 14 T100 2" stroke="#2D6F82" strokeWidth="1.5" fill="none" />
+              </svg>
+            </motion.div>
+          )}
+        </div>
+      )}
+
+      {/* 2. WORKFLOW PHASE */}
+      {phase === 'workflow' && (
+        <UnifiedVisualProcessor activeStep={activeStep} />
+      )}
+
+      {/* 3. MARKETPLACE PREVIEW */}
+      {phase === 'marketplace' && (
+        <div className="h-full flex flex-col justify-between p-5">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b border-ocean-border pb-2.5">
+              <span className="text-text-primary font-bold uppercase tracking-wider text-[10px]">Marketplace Preview</span>
+              <span className="text-[8px] bg-ocean-brand/20 text-ocean-premium px-2 py-0.5 rounded font-bold font-mono animate-pulse">LIVE REGISTRY FEED</span>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-[10px]">
+                <thead>
+                  <tr className="border-b border-ocean-border text-text-muted uppercase tracking-widest text-[8px]">
+                    <th className="py-2">Batch ID</th>
+                    <th className="py-2">Verifier</th>
+                    <th className="py-2 text-right">Price/T</th>
+                    <th className="py-2 text-right">Available</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-ocean-divider">
+                  {batches.map((batch) => {
+                    const isUpdated = updatedRowId === batch.id;
+                    return (
+                      <tr
+                        key={batch.id}
+                        onClick={() => setSelectedBatch(batch.id)}
+                        className={`cursor-pointer transition-all duration-500 ${
+                          isUpdated ? 'bg-ocean-brand/20 font-bold border-ocean-brand' : ''
+                        } ${selectedBatch === batch.id ? 'bg-ocean-bg-secondary text-text-primary' : 'text-text-secondary/80 hover:bg-ocean-bg-secondary/40'}`}
+                      >
+                        <td className="py-2.5 font-bold text-ocean-premium">{batch.id}</td>
+                        <td className="py-2.5">{batch.verifier}</td>
+                        <td className="py-2.5 text-right font-bold text-text-primary">${batch.price.toFixed(2)}</td>
+                        <td className="py-2.5 text-right font-mono">{batch.available.toLocaleString()} t</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div className="bg-ocean-bg-secondary border border-ocean-border p-3.5 rounded-md space-y-2">
+            <div className="flex justify-between items-center text-[9px] border-b border-ocean-divider pb-1.5">
+              <span className="text-text-muted uppercase">ESCROW REGISTRY INSPECTOR</span>
+              <span className="text-ocean-success font-bold">{activeBatch.rating}</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-[9px]">
+              <div>
+                <span className="text-text-muted block">Project</span>
+                <span className="text-text-primary font-bold truncate block">{activeBatch.project}</span>
+              </div>
+              <div>
+                <span className="text-text-muted block">Registry Partner</span>
+                <span className="text-text-primary">{activeBatch.verifier}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 4. AI SIMULATION PHASE */}
+      {phase === 'ai_sim' && (
+        <div className="h-full flex flex-col justify-between p-5">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b border-ocean-border pb-2.5">
+              <span className="text-text-primary font-bold uppercase tracking-wider text-[10px]">AI Carbon Advisor</span>
+              <span className="text-[9px] text-ocean-premium font-bold">EMISSION TARGET: {offsetPercentage}%</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-ocean-bg-primary border border-ocean-border p-2.5 rounded-md">
+                <span className="text-[9px] text-text-muted block uppercase">OFFSETS PROCURED</span>
+                <span className="text-sm font-bold text-text-primary">{totalOffset.toLocaleString(undefined, { maximumFractionDigits: 0 })} t</span>
+              </div>
+              <div className="bg-ocean-bg-primary border border-ocean-border p-2.5 rounded-md">
+                <span className="text-[9px] text-text-muted block uppercase">NET LIABILITIES</span>
+                <span className="text-sm font-bold text-ocean-warning">{netEmissions.toLocaleString(undefined, { maximumFractionDigits: 0 })} t</span>
+              </div>
+            </div>
+
+            <div className="h-28 bg-ocean-bg-primary border border-ocean-border rounded-md p-3 relative flex flex-col justify-between overflow-hidden">
+              <span className="text-[9px] text-text-muted uppercase block">NET-ZERO PROJECTION MODEL</span>
+              <svg className="w-full h-16 absolute bottom-1 left-0 right-0 px-2" viewBox="0 0 100 30" fill="none" preserveAspectRatio="none">
+                <path d="M0 10 L100 10" stroke="rgba(45, 111, 130, 0.1)" strokeWidth="1" />
+                <path
+                  d={`M 0 10 C 30 10, 60 ${10 + (20 - 10) * (offsetPercentage / 100)}, 100 ${10 + (20 - 10) * (offsetPercentage / 100)}`}
+                  stroke="#2D6F82"
+                  strokeWidth="2.0"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <div className="flex justify-between items-center text-[10px] text-text-primary z-10 pt-8 font-bold">
+                <span>NET ZERO YEAR: {netZeroYear}</span>
+                <span className="text-ocean-premium">{offsetPercentage}% COVERAGE</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-ocean-bg-secondary border border-ocean-border p-3.5 rounded-md space-y-1.5">
+            <span className="text-[9px] text-ocean-premium font-bold uppercase block tracking-wider">EXECUTIVE DIRECTIVE</span>
+            <p className="text-[10px] text-text-secondary leading-relaxed font-sans italic">
+              "{getAIRecommendation()}"
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* 5. GLOBAL NETWORK PHASE */}
+      {phase === 'network' && (
+        <div className="h-full flex flex-col justify-between p-5 motif-coords">
+          <div className="space-y-4">
+            <div className="flex justify-between items-center border-b border-ocean-border pb-2.5">
+              <span className="text-text-primary font-bold uppercase tracking-wider text-[10px]">Sovereign Node Network</span>
+              <span className="text-[9px] text-ocean-premium font-bold">SYNC: OK</span>
+            </div>
+
+            <div className="space-y-2.5 pt-2">
+              <div className="flex items-center justify-between bg-ocean-bg-primary border border-ocean-border p-2 rounded-md">
+                <span className="font-bold">Verra Registry Sync</span>
+                <span className="text-ocean-success font-bold uppercase">Connected (38ms)</span>
+              </div>
+              <div className="flex items-center justify-between bg-ocean-bg-primary border border-ocean-border p-2 rounded-md">
+                <span className="font-bold">Puro.earth Index Sync</span>
+                <span className="text-ocean-success font-bold uppercase">Connected (24ms)</span>
+              </div>
+              <div className="flex items-center justify-between bg-ocean-bg-primary border border-ocean-border p-2 rounded-md">
+                <span className="font-bold">Compliance Escrow Ledger</span>
+                <span className="text-ocean-success font-bold uppercase">Connected (12ms)</span>
+              </div>
+              <div className="flex items-center justify-between bg-ocean-bg-primary border border-ocean-border p-2 rounded-md">
+                <span className="font-bold">MRV RJ-KILN-04 Array</span>
+                <span className="text-ocean-success font-bold uppercase">Active (45ms)</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-ocean-bg-secondary border border-ocean-border p-3 rounded-md text-[9px] text-text-muted">
+            All nodes synchronized. Cryptographic block transfers secured.
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};
+
+// ==========================================
+// WORKFLOW CARD COMPONENT
+// ==========================================
+const WorkflowStepCard: React.FC<{
+  step: typeof stepsData[0];
+  isActive: boolean;
+}> = ({ step, isActive }) => {
+  return (
+    <div
+      className={`transition-all duration-300 p-6 rounded-lg border shadow-ocean-sm space-y-3 bg-cover bg-center ${
+        isActive 
+          ? 'border-ocean-brand text-text-primary' 
+          : 'bg-ocean-bg-secondary border-ocean-border/60 text-text-secondary/70 opacity-60'
+      }`}
+      style={{
+        backgroundImage: isActive 
+          ? "linear-gradient(rgba(12, 37, 51, 0.96), rgba(12, 37, 51, 0.96)), url('/bathymetry.png')" 
+          : "none"
+      }}
+    >
+      <div className="text-[10px] font-mono uppercase tracking-widest text-ocean-premium font-bold">
+        {step.label}
+      </div>
+      <h3 className="text-xl font-display font-semibold text-text-primary">
+        {step.title}
+      </h3>
+      <div className="text-xs font-mono text-text-secondary leading-relaxed">
+        {step.sub}
+      </div>
+      <p className="text-[13px] text-text-secondary/90 font-sans leading-relaxed">
+        {step.description}
+      </p>
+    </div>
+  );
+};
+
+// ==========================================
+// MAIN LANDING CONTENT
+// ==========================================
+const LandingContent: React.FC = () => {
+  const [rightPanelPhase, setRightPanelPhase] = useState<'boot' | 'workflow' | 'marketplace' | 'ai_sim' | 'network'>('boot');
+  const [activeStep, setActiveStep] = useState(0);
+  const [bootState, setBootState] = useState<'idle' | 'logging' | 'nodes' | 'active'>('idle');
+
+  const [offsetPercentage, setOffsetPercentage] = useState(70);
+  const [selectedBatch, setSelectedBatch] = useState('OCN-24-001');
+  const [batches, setBatches] = useState(mockExchangeBatches);
+  const [updatedRowId, setUpdatedRowId] = useState<string | null>(null);
+
+  const stepRefs = useRef<HTMLDivElement[]>([]);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const marketplaceRef = useRef<HTMLDivElement>(null);
+  const aiSimRef = useRef<HTMLDivElement>(null);
+  const networkRef = useRef<HTMLDivElement>(null);
 
   const {
     containerRef,
-    scrollYProgress,
-    overlayOpacity,
-    showMainHeader
   } = useScrollEngine();
 
-  const cursorRef = useRef(new THREE.Vector3(100, 100, 100)); // start far away
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    const x = (e.clientX / window.innerWidth) * 2 - 1;
-    const y = -(e.clientY / window.innerHeight) * 2 + 1;
-    const aspect = window.innerWidth / window.innerHeight;
-
-    // Camera is at Z=9. Height at Z=0 is approx 7.4.
-    const visibleHeight = 7.4;
-    const visibleWidth = visibleHeight * aspect;
-
-    cursorRef.current.set(
-      (x * visibleWidth) / 2,
-      (y * visibleHeight) / 2,
-      0
-    );
-  };
-
-  // Sound triggering on first user interaction
   useEffect(() => {
-    const triggerAudio = () => {
-      ambientSoundController.play();
-      window.removeEventListener('pointerdown', triggerAudio);
-    };
-    window.addEventListener('pointerdown', triggerAudio);
+    const t1 = setTimeout(() => setBootState('logging'), 500);
+    const t2 = setTimeout(() => setBootState('nodes'), 1200);
+    const t3 = setTimeout(() => setBootState('active'), 2000);
     return () => {
-      window.removeEventListener('pointerdown', triggerAudio);
-      ambientSoundController.stop();
+      clearTimeout(t1);
+      clearTimeout(t2);
+      clearTimeout(t3);
     };
   }, []);
 
-  // Monitor scroll progress to adjust drone intensity dynamically
   useEffect(() => {
-    return scrollYProgress.onChange((v) => {
-      ambientSoundController.setIntensity(v);
-    });
-  }, [scrollYProgress]);
+    const interval = setInterval(() => {
+      const index = Math.floor(Math.random() * mockExchangeBatches.length);
+      setBatches(prev => {
+        const next = [...prev];
+        const batch = next[index];
+        if (batch.available > 100) {
+          const delta = Math.floor(Math.random() * 5) + 1;
+          next[index] = { ...batch, available: batch.available - delta };
+          setUpdatedRowId(batch.id);
+          setTimeout(() => setUpdatedRowId(null), 1000);
+        }
+        return next;
+      });
+    }, 6000);
 
-  // Monitor scrollytelling steps position to trigger transitions
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     const observerOptions = {
       root: null,
-      rootMargin: '-30% 0px -40% 0px', // Trigger when step is centered in viewport
+      rootMargin: '-30% 0px -40% 0px',
       threshold: 0.1,
     };
 
     const handleIntersect = (entries: IntersectionObserverEntry[]) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          const index = parseInt(entry.target.getAttribute('data-index') || '0', 10);
-          setActiveStep(index);
+          const phase = entry.target.getAttribute('data-phase');
+          if (phase) {
+            setRightPanelPhase(phase as any);
+          }
+          const indexStr = entry.target.getAttribute('data-index');
+          if (indexStr !== null) {
+            setActiveStep(parseInt(indexStr, 10));
+          }
         }
       });
     };
 
     const observer = new IntersectionObserver(handleIntersect, observerOptions);
+
+    if (heroRef.current) observer.observe(heroRef.current);
     stepRefs.current.forEach((ref) => {
       if (ref) observer.observe(ref);
     });
+    if (marketplaceRef.current) observer.observe(marketplaceRef.current);
+    if (aiSimRef.current) observer.observe(aiSimRef.current);
+    if (networkRef.current) observer.observe(networkRef.current);
 
     return () => {
       observer.disconnect();
     };
   }, []);
 
-  // Mock credit batches for Scene 4
-  const mockExchangeBatches = {
-    Biochar: [
-      { id: 'COR-BIO-49', project: 'Rajasthan Biochar Facility', area: 'Rajasthan, IN', price: 28.50, available: 12400, permanence: '1,000+ Yrs', verifier: 'Verra', rating: 'AAA' },
-      { id: 'COR-BIO-72', project: 'Wayanad Agrochar Initiative', area: 'Kerala, IN', price: 32.00, available: 4100, permanence: '1,000+ Yrs', verifier: 'Puro.earth', rating: 'AA+' },
-      { id: 'COR-BIO-18', project: 'Punjab Farm Residue Kilns', area: 'Punjab, IN', price: 29.80, available: 8900, permanence: '1,000+ Yrs', verifier: 'Verra', rating: 'AA' },
-    ],
-    Basalt: [
-      { id: 'COR-BAS-08', project: 'Basaltic Weathering Deccan', area: 'Deccan Plateau, IN', price: 340.00, available: 3200, permanence: '10,000+ Yrs', verifier: 'Puro.earth', rating: 'AAA' },
-      { id: 'COR-BAS-14', project: 'Tamil Nadu Rock Soil Project', area: 'Tamil Nadu, IN', price: 310.00, available: 1800, permanence: '10,000+ Yrs', verifier: 'Puro.earth', rating: 'AAA' },
-    ],
-    DAC: [
-      { id: 'COR-DAC-01', project: 'Mumbai Air Filtration Stack', area: 'Maharashtra, IN', price: 620.00, available: 800, permanence: '10,000+ Yrs', verifier: 'Puro.earth', rating: 'AAA' },
-      { id: 'COR-DAC-03', project: 'Dehradun Carbon Capture', area: 'Uttarakhand, IN', price: 650.00, available: 500, permanence: '10,000+ Yrs', verifier: 'Puro.earth', rating: 'AAA' },
-    ]
-  };
-
-  const activeBatchData = mockExchangeBatches[activeExchangeTab].find(b => b.id === selectedExchangeBatch) || mockExchangeBatches[activeExchangeTab][0];
-
   return (
-    <div className="min-h-screen bg-[#030508] text-stone-100 flex flex-col font-sans selection:bg-emerald-800/10 selection:text-emerald-950 relative">
+    <div className="min-h-screen bg-ocean-bg-primary text-text-primary flex flex-col font-sans selection:bg-ocean-brand/20 selection:text-ocean-premium relative">
 
-      {/* Persistent Cinematic Background R3F Canvas */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <Canvas
-          camera={{ fov: 45, near: 0.1, far: 100, position: [0, 0.5, 9] }}
-          gl={{ antialias: true, alpha: false }}
-        >
-          <color attach="background" args={['#030508']} />
-          <fog attach="fog" args={['#030508', 5, 20]} />
-          
-          <ambientLight intensity={1.5} />
-          <directionalLight position={[5, 3, 5]} intensity={2.8} />
-          <directionalLight position={[-5, -3, -5]} intensity={1.2} color="#d4ece0" />
-          <Environment preset="night" />
-          
-          <StarField />
-          <NebulaBackground />
-          <EarthSceneContent cursorRef={cursorRef} />
-          <CameraRig />
-        </Canvas>
-      </div>
+      {/* Premium Ocean Sunrise Background Image */}
+      <div 
+        className="fixed inset-0 z-0 bg-cover bg-center pointer-events-none opacity-45 bg-[#07151C]" 
+        style={{ backgroundImage: "url('/ocean_bg.png')" }} 
+      />
 
-      {/* Floating editorial header (fades in as we scroll into the light content) */}
-      <motion.nav
-        style={{
-          opacity: showMainHeader,
-          pointerEvents: useTransform(scrollYProgress, (v: number) => v > 0.28 ? 'auto' : 'none') as any
-        }}
-        className="fixed top-0 z-50 w-full bg-[#FAF8F6]/80 backdrop-blur-md border-b border-[#1E3A2F]/5 h-16 flex items-center justify-between px-6 md:px-12"
-      >
+      {/* Floating Ocean Plankton / Bubble Particles */}
+      <div className="fixed inset-0 z-1 pointer-events-none particles-drift" />
+
+      {/* Volumetric Ocean Light Rays */}
+      <div className="fixed inset-0 z-2 pointer-events-none volumetric-beams" />
+
+      {/* caustics sunrise ambient light overlay */}
+      <div className="fixed inset-0 z-3 pointer-events-none caustics-overlay" />
+
+      {/* Top Header Navigation */}
+      <nav className="fixed top-0 z-50 w-full bg-ocean-bg-primary/95 backdrop-blur-md border-b border-ocean-divider h-14 flex items-center justify-between px-6 md:px-12">
         <div className="flex items-center gap-3">
-          <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-14 w-auto object-contain" />
-          <span className="text-[9px] font-mono tracking-wider border border-[#1E3A2F]/20 text-[#1E3A2F] px-1.5 py-0.5 rounded">DOCUMENTARY</span>
+          <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-9 w-auto object-contain" />
+          <div className="h-6 w-px bg-ocean-border/60 hidden sm:block" />
+          <div className="hidden sm:flex flex-col text-[8px] text-text-muted uppercase leading-tight">
+            <span>Empowering carbon free mother earth</span>
+            <span>Escrow Ledger v1.0</span>
+          </div>
         </div>
 
         <div className="flex items-center gap-6">
           <Link
             to="/login"
-            className="text-[11px] font-mono uppercase tracking-widest text-[#60645F] hover:text-[#151614] transition-colors"
+            className="text-[11px] font-mono uppercase tracking-wider text-text-secondary font-bold hover:text-text-primary transition-colors"
           >
-            Terminal Sign In
+            Ledger Catalog
           </Link>
           <Link
             to="/login"
-            className="inline-flex h-9 items-center justify-center border border-[#1E3A2F]/10 rounded bg-[#1E3A2F] px-4 text-[11px] font-mono uppercase tracking-widest text-[#FAF8F6] transition-all hover:bg-stone-900 active:scale-95 shadow-soft"
+            className="ocean-btn-primary text-xs font-mono uppercase tracking-wider"
           >
             Enter Platform
           </Link>
         </div>
-      </motion.nav>
+      </nav>
 
-      {/* ==========================================
-      SCENE 1: CarbonOS Opening Cinematic (Atmospheric CO₂)
-      ========================================== */}
-      <section
+      {/* Main Page Layout Container (Left: Scrolling content, Right: Sticky Master Dashboard) */}
+      <div 
         ref={containerRef}
-        onPointerMove={handlePointerMove}
-        className="relative h-[250vh] bg-transparent text-white z-10"
+        className="relative max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-start z-10 px-6 md:px-12 pt-28 pb-32"
       >
-        <div className="sticky top-0 h-screen w-full overflow-hidden">
-
-          {/* Cinematic transparent nav header */}
-          <div className="absolute top-0 left-0 w-full h-20 flex items-center justify-between px-6 md:px-12 z-30 pointer-events-auto">
-            <motion.div
-              variants={logoVariants}
-              initial="hidden"
-              animate="visible"
-              className="flex items-center gap-3"
-            >
-              <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-14 w-auto object-contain" />
-              <span className="text-[9px] font-mono tracking-wider border border-white/20 text-white/60 px-1.5 py-0.5 rounded">
-                CarbonOS
-              </span>
-            </motion.div>
-
-            <div className="flex items-center gap-4 md:gap-8 z-30 pointer-events-auto flex-shrink-0">
-              {["About", "Projects", "Contact"].map((item, i) => (
-                <motion.a
-                  key={item}
-                  custom={i}
-                  variants={navItemVariants}
-                  initial="hidden"
-                  animate="visible"
-                  href="#"
-                  className="hidden md:inline text-[10px] font-mono uppercase tracking-widest text-white/50 hover:text-white transition-colors"
-                >
-                  {item}
-                </motion.a>
-              ))}
-              <span className="h-4 w-px bg-white/10 hidden md:inline-block" />
-              <Link
-                to="/login"
-                className="inline-flex h-8 items-center justify-center border border-white/15 rounded bg-[#1E3A2F] px-4 text-[10px] font-mono uppercase tracking-widest text-[#FAF8F6] transition-all hover:bg-stone-900 active:scale-95 shadow-soft flex-shrink-0"
-              >
-                Sign In
-              </Link>
-            </div>
-          </div>
-
-          {/* Hero text overlay */}
-          <HeroScene />
-
-          {/* Transition fog overlay to deep emerald/teal */}
-          <motion.div
-            style={{ opacity: overlayOpacity }}
-            className="absolute inset-0 bg-gradient-to-b from-[#030508]/10 via-[#050b0a]/60 to-[#081210] pointer-events-none z-20"
-          />
-
-        </div>
-      </section>
-
-      {/* ==========================================
-      SCENE 2: The Project Lifecycle (Scrollytelling)
-      ========================================== */}
-      <section className="relative bg-transparent border-y border-emerald-950/20 px-6 md:px-24 py-32 grid md:grid-cols-2 gap-16 items-start z-10 backdrop-blur-[1px]">
         
-        {/* Volumetric backlight bubble */}
-        <div className="absolute top-1/3 left-1/4 w-[450px] h-[450px] rounded-full bg-teal-500/[0.04] blur-[120px] pointer-events-none animate-glow-slow" />
-
-        {/* Left Side Scrolling Content */}
-        <div className="space-y-24 relative z-10">
-          <div className="space-y-4">
-            <span className="inline-block text-xs font-mono uppercase tracking-widest text-emerald-400 bg-emerald-950/40 border border-emerald-500/20 px-2.5 py-1 rounded">
-              Scene II / The Lifecycle
-            </span>
-            <h2 className="text-4xl md:text-6xl font-editorial font-bold tracking-tight text-white leading-tight">
-              Anatomy of <br />Permanent Removal
-            </h2>
-            <p className="text-xs font-mono text-stone-400 max-w-md leading-relaxed">
-              Scroll through to follow the exact journey of carbon. See how decaying biomass is locked away, audited, issued, and ultimately retired permanently.
-            </p>
-          </div>
-
-          <div className="space-y-64 relative z-10 pb-48">
-            <CaptureScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[0] = el; }} />
-            <TransformationScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[1] = el; }} />
-            <VerificationScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[2] = el; }} />
-            <RegistryScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[3] = el; }} />
-            <MarketplaceScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[4] = el; }} />
-            <RetirementScene activeStep={activeStep} domRef={(el) => { if (el) stepRefs.current[5] = el; }} />
-          </div>
-        </div>
-
-        {/* Right Side Sticky Visualizer Card */}
-        <div className="sticky top-28 self-start h-[460px] w-full flex items-center justify-center relative z-10">
-          <motion.div
-            style={{
-              rotateX: useTransform(scrollYProgress, [0.15, 0.70], [2, -2]),
-              rotateY: useTransform(scrollYProgress, [0.15, 0.70], [-2, 2]),
-              y: useTransform(scrollYProgress, [0.15, 0.70], [0, 8]),
-            }}
-            className="w-full h-full premium-glass rounded-2xl relative overflow-hidden animate-float-slow"
+        {/* Left Side: Continuous Scrolling Copy */}
+        <div className="space-y-48">
+          
+          {/* Section 1: Hero Block */}
+          <div 
+            ref={heroRef}
+            data-phase="boot"
+            className="space-y-8 pt-12"
           >
-            <UnifiedVisualProcessor activeStep={activeStep} />
-          </motion.div>
-        </div>
+            <div className="space-y-6">
+              <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-ocean-premium bg-ocean-brand/12 border border-ocean-brand/20 px-2 py-0.5 rounded font-bold">
+                SEC. 01 // Sovereign Carbon Registry
+              </span>
+              
+              {/* Exact Design big-sized logo */}
+              <BigOceanLogo />
 
-      </section>
-
-      {/* ==========================================
-      SCENE 3: The Ecosystem Connection
-      ========================================== */}
-      <EcosystemScene />
-
-      {/* ==========================================
-      SCENE 4: The Carbon Credit Exchange
-      ========================================== */}
-      <section className="relative bg-transparent text-stone-100 px-6 md:px-24 py-32 overflow-hidden border-t border-emerald-950/20 backdrop-blur-[1px] z-10">
-        
-        {/* Volumetric backlight bubble */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] rounded-full bg-emerald-500/[0.03] blur-[130px] pointer-events-none animate-glow-slow" />
-
-        <div className="max-w-6xl mx-auto space-y-12 relative z-10">
-
-          <div className="space-y-4 max-w-xl">
-            <span className="inline-block text-xs font-mono uppercase tracking-widest text-[#B85C38] bg-[#B85C38]/5 border border-[#B85C38]/15 px-2.5 py-1 rounded">
-              Scene IV / The Exchange
-            </span>
-            <h2 className="text-4xl md:text-6xl font-editorial font-bold tracking-tight text-[#FAF8F6]">
-              Carbon Credit Exchange
-            </h2>
-            <p className="text-xs font-mono text-stone-400 leading-relaxed">
-              A premium clearinghouse for verified carbon removal. Inspect real physical credit batches currently held in escrow catalog nodes. Fully audited, transparent, and trade-locked.
-            </p>
-          </div>
-
-          {/* Live Order Book Terminal Interface */}
-          <div className="grid md:grid-cols-3 gap-8 premium-glass rounded-2xl p-6 relative overflow-hidden animate-float-medium">
-
-            {/* Left Terminal: Tabs & Batch Selection Table */}
-            <div className="md:col-span-2 space-y-4 border-r border-emerald-950/20 pr-0 md:pr-6">
-              <div className="flex items-center justify-between border-b border-emerald-950/20 pb-3">
-                <div className="flex gap-2">
-                  {(['Biochar', 'Basalt', 'DAC'] as const).map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => {
-                        setActiveExchangeTab(tab);
-                        setSelectedExchangeBatch(mockExchangeBatches[tab][0].id);
-                      }}
-                      className={`px-3 py-1 font-mono text-[9px] uppercase tracking-wider rounded border transition-all ${activeExchangeTab === tab
-                          ? 'bg-[#1E3A2F] border-emerald-500/30 text-emerald-300'
-                          : 'bg-stone-900 border-stone-850 text-stone-400 hover:text-stone-100'
-                        }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-1 text-[8px] font-mono text-emerald-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  Live Feeds Updated
-                </div>
-              </div>
-
-              {/* Table */}
-              <div className="overflow-x-auto">
-                <table className="w-full text-left font-mono text-[10px]">
-                  <thead>
-                    <tr className="border-b border-emerald-950/20 text-stone-500 uppercase tracking-widest text-[8px]">
-                      <th className="py-2.5">Batch ID</th>
-                      <th className="py-2.5">Project</th>
-                      <th className="py-2.5">Permanence</th>
-                      <th className="py-2.5 text-right">Price/T</th>
-                      <th className="py-2.5 text-right">Available</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-emerald-950/20">
-                    {mockExchangeBatches[activeExchangeTab].map((batch) => (
-                      <tr
-                        key={batch.id}
-                        onClick={() => setSelectedExchangeBatch(batch.id)}
-                        className={`cursor-pointer transition-all hover:bg-stone-900/60 ${selectedExchangeBatch === batch.id ? 'bg-[#1E3A2F]/20 text-emerald-300' : ''
-                          }`}
-                      >
-                        <td className="py-3 font-bold text-emerald-400">{batch.id}</td>
-                        <td className="py-3">{batch.project}</td>
-                        <td className="py-3 text-stone-400">{batch.permanence}</td>
-                        <td className="py-3 text-right font-bold">${batch.price.toFixed(2)}</td>
-                        <td className="py-3 text-right text-stone-300">{batch.available.toLocaleString()} t</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+              <h1 className="text-3xl md:text-4xl font-display font-semibold text-text-primary leading-tight mt-6">
+                The Operating System for Trusted Carbon Markets.
+              </h1>
             </div>
 
-            {/* Right Terminal: Batch Inspection Details Panel */}
-            <div className="flex flex-col justify-between space-y-6">
-              <div>
-                <div className="flex justify-between items-center border-b border-emerald-950/20 pb-3 mb-4">
-                  <span className="text-[9px] font-mono text-stone-400 uppercase tracking-widest">BATCH INSPECTOR</span>
-                  <span className="text-[9px] border border-emerald-500/25 bg-emerald-500/5 text-emerald-400 px-1.5 py-0.5 rounded font-mono font-bold">
-                    {activeBatchData.rating} Verified
-                  </span>
-                </div>
+            <p className="text-sm text-text-secondary max-w-lg leading-relaxed">
+              OCEAN is the end-to-end carbon intelligence platform to develop, verify, trade and retire high-integrity carbon credits at global scale. Developed by **GreenASHA** to bridge capital to verified ecological developer assets.
+            </p>
 
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="text-[12px] font-bold text-stone-100">{activeBatchData.project}</h4>
-                    <span className="text-[9px] font-mono text-stone-400">{activeBatchData.area}</span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 bg-stone-900 border border-stone-850 rounded p-3 text-[10px] font-mono">
-                    <div>
-                      <span className="text-[8px] text-stone-500 block">REGISTRY</span>
-                      <span className="text-stone-300 font-bold">{activeBatchData.verifier}</span>
-                    </div>
-                    <div>
-                      <span className="text-[8px] text-stone-500 block">PERMANENCE</span>
-                      <span className="text-[#B85C38] font-bold">{activeBatchData.permanence}</span>
-                    </div>
-                    <div>
-                      <span className="text-[8px] text-stone-500 block">AUDITED SPOT PRICE</span>
-                      <span className="text-emerald-400 font-bold">${activeBatchData.price.toFixed(2)}</span>
-                    </div>
-                    <div>
-                      <span className="text-[8px] text-stone-500 block">UNSOLD ESCROW</span>
-                      <span className="text-stone-300 font-semibold">{activeBatchData.available.toLocaleString()} t</span>
-                    </div>
-                  </div>
-
-                  <div className="border-t border-emerald-950/20 pt-3 space-y-1">
-                    <span className="text-[8px] font-mono text-stone-500 uppercase block">Audit Verification Trail</span>
-                    <div className="flex items-center gap-1.5 text-[9px] font-mono text-emerald-400">
-                      <Shield className="h-3.5 w-3.5" />
-                      <span>Permanence locks cryptographically signed.</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <Link
-                to="/login"
-                className="w-full inline-flex h-10 items-center justify-center rounded bg-emerald-700 hover:bg-emerald-600 text-[#FAF8F6] text-xs font-mono uppercase tracking-widest transition-all active:scale-95 shadow-md"
-              >
-                Procure Selected Batch
+            <div className="flex gap-4">
+              <Link to="/login" className="ocean-btn-primary font-mono text-xs uppercase tracking-wider">
+                Explore Platform
+              </Link>
+              <Link to="/login" className="ocean-btn-secondary font-mono text-xs uppercase tracking-wider">
+                Book A Demo
               </Link>
             </div>
 
+            {/* Verification highlights */}
+            <div className="grid grid-cols-2 gap-4 pt-6 border-t border-ocean-divider text-[10px]">
+              <div className="flex items-center gap-2 text-text-secondary">
+                <CheckCircle className="h-4 w-4 text-ocean-success" />
+                <span>AI-Powered Intelligence</span>
+              </div>
+              <div className="flex items-center gap-2 text-text-secondary">
+                <CheckCircle className="h-4 w-4 text-ocean-success" />
+                <span>Blockchain Secured Ledger</span>
+              </div>
+              <div className="flex items-center gap-2 text-text-secondary">
+                <CheckCircle className="h-4 w-4 text-ocean-success" />
+                <span>Global Compliance Ready</span>
+              </div>
+              <div className="flex items-center gap-2 text-text-secondary">
+                <CheckCircle className="h-4 w-4 text-ocean-success" />
+                <span>High Integrity Assured</span>
+              </div>
+            </div>
+          </div>
+
+
+          {/* Section 2: Lifecycle Scrollytelling Cards */}
+          <div className="space-y-16">
+            <div className="space-y-4">
+              <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-ocean-premium bg-ocean-brand/12 border border-ocean-brand/20 px-2 py-0.5 rounded font-bold">
+                SEC. 02 // Carbon Workflow Engine
+              </span>
+              <h2 className="text-2xl md:text-3xl font-display font-semibold text-text-primary">
+                From Impact to Integrity.
+              </h2>
+              <p className="text-xs text-text-secondary leading-relaxed max-w-md">
+                OCEAN unifies the entire carbon credit lifecycle with transparency, automation and intelligence. Observe how each stage updates the active software console.
+              </p>
+            </div>
+
+            <div className="space-y-12">
+              {stepsData.map((step, idx) => (
+                <div 
+                  key={step.id} 
+                  ref={el => { if (el) stepRefs.current[idx] = el; }} 
+                  data-phase="workflow" 
+                  data-index={idx}
+                >
+                  <WorkflowStepCard 
+                    step={step} 
+                    isActive={activeStep === idx} 
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+
+          {/* Section 3: Marketplace Clearinghouse description */}
+          <div 
+            ref={marketplaceRef}
+            data-phase="marketplace"
+            className="space-y-6 p-8 rounded-lg bg-ocean-bg-secondary/40 border border-ocean-border/40 bg-cover bg-center"
+            style={{ backgroundImage: "linear-gradient(rgba(7, 21, 28, 0.85), rgba(7, 21, 28, 0.85)), url('/bathymetry.png')" }}
+          >
+            <div className="space-y-4">
+              <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-ocean-premium bg-ocean-brand/12 border border-ocean-brand/20 px-2 py-0.5 rounded font-bold">
+                SEC. 03 // Marketplace clearinghouse
+              </span>
+              <h2 className="text-2xl md:text-3xl font-display font-semibold text-text-primary">
+                B2B Escrow Clearing Grid
+              </h2>
+            </div>
+            
+            <p className="text-xs text-text-secondary leading-relaxed max-w-md">
+              The clearinghouse coordinates verified batches currently held in registry escrow. Inspect real physical credit batches, verifiers, permanence levels, prices and AAA ratings.
+            </p>
+
+            <div className="pt-2">
+              <Link to="/login" className="ocean-btn-primary font-mono text-xs uppercase tracking-wider inline-flex items-center gap-2">
+                Open Escrow Ledger <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+          </div>
+
+
+          {/* Section 4: AI Simulation Dashboard description */}
+          <div 
+            ref={aiSimRef}
+            data-phase="ai_sim"
+            className="space-y-6"
+          >
+            <div className="space-y-4">
+              <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-ocean-premium bg-ocean-brand/12 border border-ocean-brand/20 px-2 py-0.5 rounded font-bold">
+                SEC. 04 // AI Portfolio Simulator
+              </span>
+              <h2 className="text-2xl md:text-3xl font-display font-semibold text-text-primary">
+                Calculated Scope Liability Coverage
+              </h2>
+            </div>
+
+            <p className="text-xs text-text-secondary leading-relaxed max-w-md">
+              Use the analytics module to model Scope 1 & 2 liabilities. Adjust the target offset range to balance carbon removal permanence, cost, and compliance targets.
+            </p>
+
+            {/* Simulated Offset Slider control */}
+            <div 
+              className="border border-ocean-border rounded-lg p-5 max-w-md space-y-4 shadow-ocean-sm bg-cover bg-center"
+              style={{ backgroundImage: "linear-gradient(rgba(7, 21, 28, 0.9), rgba(7, 21, 28, 0.9)), url('/bathymetry.png')" }}
+            >
+              <div className="flex justify-between items-center text-[10px] font-mono">
+                <span className="text-text-muted uppercase">Target Simulator</span>
+                <span className="text-text-primary font-bold">{offsetPercentage}% Offset</span>
+              </div>
+              <input
+                type="range"
+                min="10"
+                max="100"
+                step="5"
+                value={offsetPercentage}
+                onChange={(e) => setOffsetPercentage(parseInt(e.target.value))}
+                className="w-full h-1 bg-ocean-bg-primary border border-ocean-border rounded-lg appearance-none cursor-pointer accent-ocean-brand focus:outline-none"
+              />
+              <div className="flex justify-between text-[8px] font-mono text-text-muted uppercase">
+                <span>10% Min</span>
+                <span>100% Net Zero</span>
+              </div>
+            </div>
+          </div>
+
+
+          {/* Section 5: Global Network Map Info */}
+          <div 
+            ref={networkRef}
+            data-phase="network"
+            className="space-y-6"
+          >
+            <div className="space-y-4">
+              <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-ocean-premium bg-ocean-brand/12 border border-ocean-brand/20 px-2 py-0.5 rounded font-bold">
+                SEC. 05 // Global Registry Grid
+              </span>
+              <h2 className="text-2xl md:text-3xl font-display font-semibold text-text-primary">
+                Sovereign Registry Node Sync
+              </h2>
+            </div>
+
+            <p className="text-xs text-text-secondary leading-relaxed max-w-md">
+              OCEAN is directly synchronized with global carbon registers (Puro.earth, Verra). Cryptographic vaults prevent double-claims and secure assets until final retirement settlement.
+            </p>
           </div>
 
         </div>
+
+        {/* Right Side: Sticky Master Dashboard Panel Container */}
+        <div className="sticky top-24 self-start w-full h-[520px] rounded-lg border border-ocean-brand/35 bg-ocean-bg-elevated shadow-[0_0_30px_rgba(141,229,233,0.07)] overflow-hidden hidden lg:block">
+          <MasterDashboard
+            phase={rightPanelPhase}
+            activeStep={activeStep}
+            bootState={bootState}
+            offsetPercentage={offsetPercentage}
+            batches={batches}
+            selectedBatch={selectedBatch}
+            setSelectedBatch={setSelectedBatch}
+            updatedRowId={updatedRowId}
+          />
+        </div>
+
+      </div>
+
+      {/* Impact metrics counter grid */}
+      <section className="relative py-20 bg-ocean-bg-secondary border-t border-ocean-border z-10">
+        <div className="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-2 md:grid-cols-6 gap-6 text-center font-mono">
+          <div>
+            <span className="text-2xl font-bold text-text-primary block">1.24M+</span>
+            <span className="text-[8px] text-text-muted uppercase tracking-widest block mt-1">tCO₂e Removed</span>
+          </div>
+          <div>
+            <span className="text-2xl font-bold text-text-primary block">48+</span>
+            <span className="text-[8px] text-text-muted uppercase tracking-widest block mt-1">Active Projects</span>
+          </div>
+          <div>
+            <span className="text-2xl font-bold text-text-primary block">12</span>
+            <span className="text-[8px] text-text-muted uppercase tracking-widest block mt-1">Countries Active</span>
+          </div>
+          <div>
+            <span className="text-2xl font-bold text-text-primary block">$18.7M+</span>
+            <span className="text-[8px] text-text-muted uppercase tracking-widest block mt-1">Settled Value</span>
+          </div>
+          <div>
+            <span className="text-2xl font-bold text-text-primary block">850+</span>
+            <span className="text-[8px] text-text-muted uppercase tracking-widest block mt-1">Buyers Network</span>
+          </div>
+          <div>
+            <span className="text-2xl font-bold text-ocean-premium block">100%</span>
+            <span className="text-[8px] text-text-muted uppercase tracking-widest block mt-1">On-Chain Audited</span>
+          </div>
+        </div>
       </section>
 
-      {/* ==========================================
-      SCENE 5: The Carbon Intelligence Dashboard
-      ========================================== */}
-      <FinaleScene />
-
-      {/* ==========================================
-      FINAL CONCLUDING CTA (Documentary Exit)
-      ========================================== */}
-      <section className="relative bg-transparent text-stone-100 py-32 px-6 md:px-24 text-center overflow-hidden border-t border-emerald-950/20 z-10">
-        <div className="max-w-2xl mx-auto space-y-8 relative z-10">
-          <div className="space-y-4">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-stone-500">The Journey Concludes</span>
-            <h2 className="text-4xl md:text-7xl font-editorial font-bold tracking-tight text-[#FAF8F6]">
-              Audit the Ledger.
-            </h2>
-          </div>
-          <p className="text-xs font-mono text-stone-400 leading-relaxed max-w-lg mx-auto">
-            Step away from static calculations. Acquire verified, carbon removal assets directly through our digital terminal and access actionable carbon intelligence.
+      {/* Concluding Section */}
+      <section 
+        className="relative py-24 border-t border-ocean-border/50 text-center overflow-hidden z-10 bg-cover bg-center"
+        style={{ backgroundImage: "linear-gradient(rgba(7, 21, 28, 0.85), rgba(7, 21, 28, 0.95)), url('/bathymetry.png')" }}
+      >
+        <div className="max-w-2xl mx-auto space-y-6 px-6">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-ocean-premium font-bold">[ SECURE_ESCROW_ONLINE ]</span>
+          <h2 className="text-3xl md:text-4xl font-display font-semibold text-text-primary">
+            Build the future of carbon intelligence.
+          </h2>
+          <p className="text-xs text-text-secondary max-w-md mx-auto leading-relaxed">
+            Obtain institutional-grade verified carbon removal assets. Link directly to registry nodes and automate scope liability reporting.
           </p>
-
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
-            <Link
-              to="/login"
-              className="inline-flex h-11 items-center justify-center rounded bg-emerald-700 hover:bg-emerald-600 px-8 text-xs font-mono uppercase tracking-widest text-[#FAF8F6] active:scale-95 shadow-premium transition-all w-full sm:w-auto"
-            >
-              Enter Terminal Catalog
-            </Link>
-            <Link
-              to="/login"
-              className="inline-flex h-11 items-center justify-center rounded border border-stone-850 hover:bg-stone-900 px-8 text-xs font-mono uppercase tracking-widest text-[#FAF8F6] active:scale-95 transition-all w-full sm:w-auto"
-            >
-              Request Registry Node
+          <div className="flex justify-center gap-4 pt-2">
+            <Link to="/login" className="ocean-btn-primary font-mono text-xs uppercase tracking-wider">
+              Join OCEAN Today
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ==========================================
-      EDITORIAL FOOTER
-      ========================================== */}
-      <footer className="bg-[#030508]/60 text-stone-500 py-16 px-6 md:px-24 border-t border-emerald-950/20 relative z-10 text-[10px] font-mono backdrop-blur-[2px]">
-        <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 pb-12 border-b border-[#0b1715]">
+      {/* Institutional Footer */}
+      <footer className="bg-ocean-bg-primary text-text-muted py-12 px-6 md:px-12 border-t border-ocean-divider relative z-10 text-[10px] font-mono">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 pb-8 border-b border-ocean-divider">
           <div className="space-y-3">
-            <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-12 w-auto object-contain" />
-            <p className="text-[#60645F] font-sans leading-relaxed">
-              An investor-grade registry catalog connecting buyers and projects with absolute cryptographic auditing.
+            <div className="flex items-center gap-2">
+              <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-8 w-auto object-contain" />
+            </div>
+            <p className="text-text-muted/80 leading-relaxed font-sans text-[11px]">
+              Empowering carbon free mother earth. End-to-end carbon credit ecosystem by GreenASHA.
             </p>
           </div>
-          <div className="space-y-3">
-            <div className="text-stone-300 font-bold uppercase tracking-widest">Methodologies</div>
-            <ul className="space-y-1.5">
-              <li><Link to="/login" className="hover:text-stone-300 transition-colors">Crop Residue Biochar</Link></li>
-              <li><Link to="/login" className="hover:text-stone-300 transition-colors">Basalt Rock weathering</Link></li>
-              <li><Link to="/login" className="hover:text-stone-300 transition-colors">Direct Air Filtration</Link></li>
+          <div className="space-y-2">
+            <div className="text-text-primary font-bold uppercase">Registry Nodes</div>
+            <ul className="space-y-1 text-text-secondary/80">
+              <li>Puro.earth API Integration</li>
+              <li>Verra Registry Pipeline</li>
+              <li>Compliance Escrow Vaults</li>
             </ul>
           </div>
-          <div className="space-y-3">
-            <div className="text-stone-300 font-bold uppercase tracking-widest">Connect Nodes</div>
-            <ul className="space-y-1.5">
-              <li><Link to="/login" className="hover:text-stone-300 transition-colors">Verra Registry Sync</Link></li>
-              <li><Link to="/login" className="hover:text-stone-300 transition-colors">Puro.earth Index</Link></li>
-              <li><Link to="/login" className="hover:text-stone-300 transition-colors">Digital Vault API</Link></li>
+          <div className="space-y-2">
+            <div className="text-text-primary font-bold uppercase">Methodologies</div>
+            <ul className="space-y-1 text-text-secondary/80">
+              <li>Biomass Pyrolysis (Biochar)</li>
+              <li>Basalt Rock Weathering</li>
+              <li>Direct Air Capture (DAC)</li>
             </ul>
           </div>
-          <div className="space-y-3 font-sans">
-            <div className="text-stone-300 font-mono font-bold uppercase tracking-widest">Governance</div>
-            <p className="text-[#60645F] leading-relaxed">
-              All transactions verified through decentralised nodes. Average permanence rating: AAA. Certifications permanently logged and sealed.
-            </p>
+          <div className="space-y-2">
+            <div className="text-text-primary font-bold uppercase">Network Status</div>
+            <div className="flex items-center gap-1.5 text-ocean-success font-bold">
+              <Activity className="h-3.5 w-3.5" /> Nodes Synchronized
+            </div>
           </div>
         </div>
 
-        <div className="max-w-6xl mx-auto pt-8 flex flex-col sm:flex-row sm:justify-between items-center gap-4 text-[#60645F]">
-          <span>&copy; {new Date().getFullYear()} GreenASHA Platform. Audited Net-Zero Ledger.</span>
+        <div className="max-w-7xl mx-auto pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-text-muted/60">
+          <span>&copy; {new Date().getFullYear()} GreenASHA Technologies. All rights reserved. OCEAN and Carbon Intelligence Platform are trademarks of GreenASHA.</span>
           <div className="flex gap-4">
-            <a href="#" className="hover:text-stone-300 transition-colors">Registry Status</a>
-            <a href="#" className="hover:text-stone-300 transition-colors">Methodology Documents</a>
-            <a href="#" className="hover:text-stone-300 transition-colors">Client Escrow Terms</a>
+            <a href="#" className="hover:text-text-primary">Registry Status</a>
+            <a href="#" className="hover:text-text-primary">Methodology Docs</a>
+            <a href="#" className="hover:text-text-primary">API Terms</a>
           </div>
         </div>
       </footer>

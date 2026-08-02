@@ -9,6 +9,9 @@ export const HeroScene: React.FC = () => {
 
   return (
     <>
+      {/* Dark radial overlay behind typography to guarantee 100% legibility */}
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(8,9,10,0.85)_0%,rgba(8,9,10,0.40)_55%,transparent_90%)] pointer-events-none z-10" />
+
       <motion.div
         style={{ opacity: textOpacity, y: textY }}
         className="absolute inset-0 flex flex-col items-center justify-center px-6 z-30 pointer-events-none"
@@ -60,28 +63,28 @@ export const HeroScene: React.FC = () => {
         >
           <Link
             to="/login"
-            className="inline-flex h-11 items-center justify-center rounded-lg bg-[#1E3A2F] px-6 text-xs font-mono uppercase tracking-widest text-[#FAF8F6] transition-all hover:bg-stone-900 active:scale-95 shadow-soft"
+            className="inline-flex h-11 items-center justify-center rounded-lg bg-brand-alpine hover:bg-brand-alpine/90 px-6 text-xs font-mono uppercase tracking-widest text-brand-warmWhite font-bold transition-all active:scale-95 shadow-[0_4px_12px_rgba(5,8,6,0.3)]"
           >
             Explore Marketplace
           </Link>
           <Link
             to="/login"
-            className="inline-flex h-11 items-center justify-center rounded-lg border border-white/15 bg-white/5 px-6 text-xs font-mono uppercase tracking-widest text-white transition-all hover:bg-white/10 active:scale-95"
+            className="inline-flex h-11 items-center justify-center rounded-lg border border-brand-warmWhite/30 bg-transparent px-6 text-xs font-mono uppercase tracking-widest text-brand-warmWhite font-bold transition-all hover:bg-brand-warmWhite/5 active:scale-95"
           >
             Request Demo
           </Link>
         </motion.div>
       </motion.div>
-
+ 
       {/* Scroll Down Indicator */}
       <motion.div
         style={{ opacity: textOpacity }}
         className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-30 pointer-events-none"
       >
-        <span className="text-[9px] font-mono uppercase tracking-widest text-white/40">
+        <span className="text-[9px] font-mono uppercase tracking-widest text-brand-warmWhite/60 font-bold">
           Explore the Journey
         </span>
-        <div className="w-[1px] h-12 bg-white/10 overflow-hidden relative">
+        <div className="w-[1px] h-12 bg-brand-warmWhite/10 overflow-hidden relative">
           <motion.div
             variants={{
               animate: {
@@ -96,7 +99,7 @@ export const HeroScene: React.FC = () => {
               }
             }}
             animate="animate"
-            className="absolute left-0 w-full bg-emerald-400"
+            className="absolute left-0 w-full bg-brand-sand"
           />
         </div>
       </motion.div>

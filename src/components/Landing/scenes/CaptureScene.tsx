@@ -14,20 +14,22 @@ export const CaptureScene: React.FC<SceneProps> = ({ activeStep, domRef }) => {
     <div
       ref={domRef}
       data-index={0}
-      className={`transition-all duration-500 border-l-2 pl-6 py-2 space-y-3 ${
-        isActive ? 'border-emerald-400 opacity-100' : 'border-emerald-500/10 opacity-30'
+      className={`transition-all duration-300 p-6 rounded-lg border shadow-ocean-sm space-y-3 ${
+        isActive 
+          ? 'bg-ocean-bg-elevated border-ocean-brand text-text-primary' 
+          : 'bg-ocean-bg-secondary border-ocean-border/60 text-text-secondary/70 opacity-60'
       }`}
     >
-      <div className="text-[10px] font-mono uppercase tracking-widest text-amber-500 font-bold">
+      <div className="text-[10px] font-mono uppercase tracking-widest text-ocean-premium font-bold">
         {step.label}
       </div>
-      <h3 className="text-2xl font-editorial font-bold text-white">
+      <h3 className="text-xl font-display font-semibold text-text-primary">
         {step.title}
       </h3>
-      <div className="text-xs font-mono text-emerald-300 font-semibold leading-relaxed">
+      <div className="text-xs font-mono text-text-secondary leading-relaxed">
         {step.sub}
       </div>
-      <p className="text-xs text-stone-300 font-sans leading-relaxed">
+      <p className="text-[13px] text-text-secondary/90 font-sans leading-relaxed">
         {step.description}
       </p>
     </div>

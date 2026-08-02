@@ -2,7 +2,6 @@ import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useScrollEngine } from './ScrollEngine';
-import { CO2Molecule } from './CarbonPulse';
 
 // High-fidelity continent coordinates for a highly realistic world map
 const continents: [number, number][][] = [
@@ -52,7 +51,7 @@ const createEarthTextures = () => {
   lightsCanvas.height = 1024;
   const lightsCtx = lightsCanvas.getContext('2d')!;
 
-  mapCtx.fillStyle = '#030816'; // Dark blue ocean base
+  mapCtx.fillStyle = '#080E13'; // Match Background Primary
   mapCtx.fillRect(0, 0, 2048, 1024);
 
   lightsCtx.fillStyle = '#000000';
@@ -69,7 +68,7 @@ const createEarthTextures = () => {
     }
     mapCtx.closePath();
 
-    mapCtx.fillStyle = '#10b981'; // Green land mask
+    mapCtx.fillStyle = '#1D2D38'; // Desaturated slate-blue border/land mask
     mapCtx.fill();
   });
 
@@ -101,11 +100,11 @@ const createEarthTextures = () => {
       const px = mapX(lon);
       const py = mapY(lat);
       const brightness = Math.random();
-      const radius = Math.random() * 1.3 + 0.3;
+      const radius = Math.random() * 1.0 + 0.3;
 
       lightsCtx.beginPath();
-      lightsCtx.arc(px, py, radius, 0, Math.PI * 2);
-      lightsCtx.fillStyle = `rgba(248, 180, 50, ${brightness})`;
+      lightsCtx.arc(px, py, radius * 0.7, 0, Math.PI * 2);
+      lightsCtx.fillStyle = `rgba(110, 176, 194, ${brightness * 0.15})`; // Soft, desaturated aqua light
       lightsCtx.fill();
     }
   }
@@ -116,130 +115,25 @@ const createEarthTextures = () => {
 };
 
 export const NebulaBackground: React.FC = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  const shader = useMemo(() => ({
-    uniforms: {
-      uTime: { value: 0 },
-    },
-    vertexShader: `
-      varying vec2 vUv;
-      void main() {
-        vUv = uv;
-        gl_Position = vec4(position, 1.0);
-      }
-    `,
-    fragmentShader: `
-      varying vec2 vUv;
-      uniform float uTime;
-
-      float hash(vec2 p) {
-        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
-      }
-      float noise(vec2 p) {
-        vec2 i = floor(p);
-        vec2 f = fract(p);
-        vec2 u = f * f * (3.0 - 2.0 * f);
-        return mix(mix(hash(i + vec2(0.0, 0.0)), hash(i + vec2(1.0, 0.0)), u.x),
-                   mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), u.x), u.y);
-      }
-      float fbm(vec2 p) {
-        float v = 0.0;
-        float a = 0.5;
-        for (int i = 0; i < 3; ++i) {
-          v += a * noise(p);
-          p = p * 2.0;
-          a *= 0.5;
-        }
-        return v;
-      }
-
-      void main() {
-        vec2 uv = vUv - 0.5;
-        vec3 bg = vec3(0.01, 0.02, 0.03);
-        
-        vec2 nUv = uv * 3.2;
-        nUv.x += uTime * 0.015;
-        nUv.y += sin(uTime * 0.007) * 0.12;
-        
-        float nVal = fbm(nUv + fbm(nUv));
-        
-        vec3 greenNebula = vec3(0.01, 0.07, 0.045) * smoothstep(0.3, 0.75, nVal);
-        vec3 blueNebula = vec3(0.005, 0.025, 0.07) * smoothstep(0.15, 0.85, nVal);
-        
-        vec3 finalColor = bg + greenNebula + blueNebula;
-        float dist = length(uv);
-        finalColor *= smoothstep(1.3, 0.45, dist);
-        
-        gl_FragColor = vec4(finalColor, 1.0);
-      }
-    `
-  }), []);
-
-  useFrame((state) => {
-    if (meshRef.current && meshRef.current.material) {
-      const mat = meshRef.current.material as THREE.ShaderMaterial;
-      if (mat.uniforms && mat.uniforms.uTime) {
-        mat.uniforms.uTime.value = state.clock.getElapsedTime();
-      }
-    }
-  });
-
-  return (
-    <mesh ref={meshRef} position={[0, 0, -10]}>
-      <planeGeometry args={[30, 20]} />
-      <shaderMaterial
-        uniforms={shader.uniforms}
-        vertexShader={shader.vertexShader}
-        fragmentShader={shader.fragmentShader}
-        depthWrite={false}
-        depthTest={false}
-      />
-    </mesh>
-  );
+  return null; // Disable nebula backgrounds in favor of flat matte
 };
 
 export const StarField: React.FC = () => {
-  const count = 350;
-  const positions = useMemo(() => {
-    const arr = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      arr[i * 3] = (Math.random() - 0.5) * 35;
-      arr[i * 3 + 1] = (Math.random() - 0.5) * 25;
-      arr[i * 3 + 2] = (Math.random() - 0.5) * 15 - 4;
-    }
-    return arr;
-  }, []);
-
-  return (
-    <points>
-      <bufferGeometry>
-        <bufferAttribute
-          attach="attributes-position"
-          args={[positions, 3]}
-        />
-      </bufferGeometry>
-      <pointsMaterial
-        size={0.055}
-        color="#ffffff"
-        transparent
-        opacity={0.3}
-        sizeAttenuation
-      />
-    </points>
-  );
+  return null; // Disable stars to maintain professional SaaS clarity
 };
 
 export const EarthGlobe: React.FC<{ 
   earthTextures: { mapTex: THREE.CanvasTexture; lightsTex: THREE.CanvasTexture };
 }> = ({ earthTextures }) => {
   const { scrollYProgress } = useScrollEngine();
+  const groupRef = useRef<THREE.Group>(null);
   const globeRef = useRef<THREE.Mesh>(null);
   const clouds1Ref = useRef<THREE.Mesh>(null);
   const clouds2Ref = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
 
   const lightDirection = useMemo(() => new THREE.Vector3(3.5, 1.8, 3.5).normalize(), []);
-  const glowColor = useMemo(() => new THREE.Color('#0a271c'), []);
+  const glowColor = useMemo(() => new THREE.Color('#0A1C2A'), []);
 
   const earthShader = useMemo(() => ({
     uniforms: {
@@ -270,7 +164,6 @@ export const EarthGlobe: React.FC<{
       uniform float uTime;
       uniform float uScroll;
 
-      // Fractional Brownian Motion for procedural landmass detailing
       float hash(vec3 p) {
         p = fract(p * 0.3183099 + vec3(0.1, 0.1, 0.1));
         p *= 17.0;
@@ -281,7 +174,6 @@ export const EarthGlobe: React.FC<{
         vec3 p = floor(x);
         vec3 f = fract(x);
         f = f*f*(3.0-2.0*f);
-        
         return mix(mix(mix(hash(p+vec3(0,0,0)), hash(p+vec3(1,0,0)),f.x),
                        mix(hash(p+vec3(0,1,0)), hash(p+vec3(1,1,0)),f.x),f.y),
                    mix(mix(hash(p+vec3(0,0,1)), hash(p+vec3(1,0,1)),f.x),
@@ -299,88 +191,61 @@ export const EarthGlobe: React.FC<{
         return v;
       }
 
+      float getOpacity(float scroll) {
+        if (scroll <= 0.25) {
+          return mix(0.95, 0.40, scroll / 0.25);
+        } else if (scroll <= 0.60) {
+          return mix(0.40, 0.12, (scroll - 0.25) / 0.35);
+        } else {
+          return mix(0.12, 0.05, clamp((scroll - 0.60) / 0.3, 0.0, 1.0));
+        }
+      }
+
       void main() {
         vec3 normal = normalize(vNormal);
         vec3 lightDir = normalize(uLightDirection);
         
         float diff = dot(normal, lightDir);
-        float dayFactor = smoothstep(-0.15, 0.15, diff);
+        float dayFactor = smoothstep(-0.25, 0.25, diff);
         
-        // High-fidelity displacement mapping for organic shorelines
-        vec3 displacementDir = vec3(vPosition.x * 2.0, vPosition.y * 2.0, vPosition.z * 2.0);
-        float shorelineDetail = fbm(displacementDir * 5.0) * 0.012;
+        vec3 displacementDir = vec3(vPosition.x * 2.2, vPosition.y * 2.2, vPosition.z * 2.2);
+        float shorelineDetail = fbm(displacementDir * 8.0) * 0.035;
         vec2 warpedUv = vUv + vec2(shorelineDetail, shorelineDetail * 0.5);
         
-        // Lookup mask
         vec4 texColor = texture2D(uMap, warpedUv);
         float landValue = texColor.g;
         bool isLand = landValue > 0.4;
         
         vec3 dayColor;
         
-        // Perturb normals to simulate mountain height relief and casting shadows
         vec3 perturbedNormal = normal;
         if (isLand) {
           float bump = fbm(vPosition * 22.0) * 0.15;
           perturbedNormal = normalize(normal + vec3(bump, bump * 0.5, bump * 0.5));
         }
-        float shadowDiff = max(dot(perturbedNormal, lightDir), 0.0);
         
+        float n = fbm(displacementDir * 3.5);
+
         if (isLand) {
-          // NASA style terrain transitions (forest green, grassland yellow, rocky brown, Sahara sand)
-          float n = fbm(vPosition * 7.5);
-          
-          vec3 forest = vec3(0.03, 0.15, 0.07); // Muted satellite vegetation
-          vec3 desert = vec3(0.50, 0.42, 0.30); // Sandy dust desert
-          vec3 earth = vec3(0.22, 0.15, 0.09);  // Mountain soil
+          vec3 forest = vec3(0.11, 0.19, 0.18);  
+          vec3 desert = vec3(0.24, 0.26, 0.25);  
+          vec3 earth = vec3(0.15, 0.22, 0.22);   
           
           dayColor = mix(forest, earth, n);
-          dayColor = mix(dayColor, desert, smoothstep(0.52, 0.78, n));
-          
-          // Apply sand beach border along shorelines
-          if (landValue < 0.48) {
-            vec3 beachColor = vec3(0.48, 0.43, 0.34);
-            dayColor = mix(beachColor, dayColor, smoothstep(0.40, 0.48, landValue));
-          }
-          
-          // Relieve shadow highlights
-          dayColor *= 0.75 + 0.3 * shadowDiff;
-          
-          // Green vegetation bloom timeline
-          float bloomFactor = smoothstep(0.5, 1.0, uScroll);
-          vec3 vegetationBloom = vec3(0.01, 0.32, 0.10) * n;
-          dayColor = mix(dayColor, dayColor + vegetationBloom, bloomFactor);
+          dayColor = mix(dayColor, desert, smoothstep(0.48, 0.75, n));
+          dayColor *= max(diff, 0.0) * 0.85 + 0.15;
         } else {
-          // Ocean depth mapping (shallow coastline turquoise shelves vs deep ocean trenches)
-          float depthFactor = fbm(vPosition * 5.0);
-          vec3 deepOcean = vec3(0.010, 0.035, 0.12);
-          vec3 shallowShelf = vec3(0.035, 0.14, 0.20);
-          
-          vec3 oceanBase = mix(shallowShelf, deepOcean, smoothstep(0.18, 0.55, depthFactor));
-          
-          // Specular sunlight reflection on water surface
-          vec3 viewDir = vec3(0.0, 0.0, 1.0);
-          vec3 halfDir = normalize(lightDir + viewDir);
-          float spec = pow(max(dot(normal, halfDir), 0.0), 45.0);
-          vec3 specularColor = vec3(0.68, 0.85, 1.0) * spec * 0.52;
-          
-          dayColor = oceanBase + specularColor;
+          vec3 deepOcean = vec3(0.03, 0.09, 0.15);
+          vec3 shallowShelf = vec3(0.10, 0.28, 0.35);
+          vec3 oceanBase = mix(shallowShelf, deepOcean, smoothstep(0.18, 0.55, n));
+          dayColor = oceanBase * (max(diff, 0.0) * 0.90 + 0.10);
         }
         
         vec3 nightColor = texture2D(uLights, warpedUv).rgb;
+        vec3 finalColor = mix(nightColor, dayColor, dayFactor);
         
-        // Scene 4 (Exchange): Small city light highlights appear and flicker
-        float highlightsFactor = smoothstep(0.35, 0.70, uScroll);
-        float flicker = 1.0 + 0.25 * sin(uTime * 5.0 + vUv.x * 300.0) * cos(uTime * 3.8 + vUv.y * 220.0);
-        nightColor *= flicker * mix(0.8, 2.5, highlightsFactor);
-        
-        // Soft red-orange Rayleigh scattering sunrise glow on terminator
-        float termGlowWidth = 0.09;
-        float termBorder = 1.0 - abs(diff);
-        vec3 sunriseGlow = vec3(0.90, 0.38, 0.06) * pow(termBorder, 9.0) * smoothstep(-termGlowWidth, termGlowWidth, diff);
-        
-        vec3 finalColor = mix(nightColor, dayColor, dayFactor) + sunriseGlow;
-        gl_FragColor = vec4(finalColor, 1.0);
+        float opacity = getOpacity(uScroll);
+        gl_FragColor = vec4(finalColor * opacity, opacity);
       }
     `
   }), [earthTextures, lightDirection]);
@@ -388,7 +253,8 @@ export const EarthGlobe: React.FC<{
   const cloudsShader = useMemo(() => ({
     uniforms: {
       uTime: { value: 0 },
-      uLightDirection: { value: lightDirection }
+      uLightDirection: { value: lightDirection },
+      uScroll: { value: 0 }
     },
     vertexShader: `
       varying vec2 vUv;
@@ -404,6 +270,7 @@ export const EarthGlobe: React.FC<{
       varying vec3 vNormal;
       uniform float uTime;
       uniform vec3 uLightDirection;
+      uniform float uScroll;
 
       float hash(vec2 p) {
         return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
@@ -427,22 +294,28 @@ export const EarthGlobe: React.FC<{
         return v;
       }
 
+      float getOpacity(float scroll) {
+        if (scroll <= 0.25) {
+          return mix(0.95, 0.40, scroll / 0.25);
+        } else if (scroll <= 0.60) {
+          return mix(0.40, 0.12, (scroll - 0.25) / 0.35);
+        } else {
+          return mix(0.12, 0.05, clamp((scroll - 0.60) / 0.3, 0.0, 1.0));
+        }
+      }
+
       void main() {
         vec3 normal = normalize(vNormal);
         vec3 lightDir = normalize(uLightDirection);
-        
         float diff = dot(normal, lightDir);
         float dayFactor = smoothstep(-0.25, 0.25, diff);
-        
         vec2 uv = vUv * 4.5;
-        uv.x -= uTime * 0.006;
-        uv.y += sin(uTime * 0.002) * 0.03;
-        
-        float d = fbm(uv + fbm(uv + uTime * 0.01));
-        float density = smoothstep(0.35, 0.72, d);
-        
-        vec3 litCloudColor = vec3(0.96, 0.97, 0.99) * mix(0.03, 1.0, dayFactor);
-        gl_FragColor = vec4(litCloudColor, density * 0.58);
+        uv.x -= uTime * 0.003; 
+        float d = fbm(uv + fbm(uv + uTime * 0.005));
+        float density = smoothstep(0.40, 0.75, d);
+        vec3 litCloudColor = vec3(0.85, 0.90, 0.95) * mix(0.08, 1.0, dayFactor);
+        float opacity = getOpacity(uScroll);
+        gl_FragColor = vec4(litCloudColor, density * 0.45 * opacity);
       }
     `
   }), [lightDirection]);
@@ -450,6 +323,7 @@ export const EarthGlobe: React.FC<{
   const atmosphereShader = useMemo(() => ({
     uniforms: {
       uGlowColor: { value: glowColor },
+      uLightDirection: { value: lightDirection },
       uScroll: { value: 0 }
     },
     vertexShader: `
@@ -466,31 +340,38 @@ export const EarthGlobe: React.FC<{
       varying vec3 vNormal;
       varying vec3 vViewPosition;
       uniform vec3 uGlowColor;
+      uniform vec3 uLightDirection;
       uniform float uScroll;
+
+      float getOpacity(float scroll) {
+        if (scroll <= 0.25) {
+          return mix(0.95, 0.40, scroll / 0.25);
+        } else if (scroll <= 0.60) {
+          return mix(0.40, 0.12, (scroll - 0.25) / 0.35);
+        } else {
+          return mix(0.12, 0.05, clamp((scroll - 0.60) / 0.3, 0.0, 1.0));
+        }
+      }
+
       void main() {
         vec3 normal = normalize(vNormal);
         vec3 viewDir = normalize(vViewPosition);
-        
-        // Premium scatter depth intensity
-        float intensity = pow(1.0 - max(0.0, dot(normal, viewDir)), 4.5);
-        
-        // Restored gorgeous glowing emerald/green/teal atmosphere shell requested by user
-        vec3 baseRimColor = vec3(0.04, 0.40, 0.20);   // Emerald green base
-        vec3 healthyRimColor = vec3(0.08, 0.65, 0.35); // Bright rich emerald green-teal
-        
-        vec3 atmosphereTint = mix(baseRimColor, healthyRimColor, uScroll);
-        
-        gl_FragColor = vec4(atmosphereTint, intensity * 0.95);
+        float intensity = pow(1.0 - max(0.0, dot(normal, viewDir)), 7.0);
+        vec3 cameraSpaceLightDir = normalize(vec3(0.6, 0.4, 0.7));
+        float atmosphereLight = smoothstep(-0.35, 0.45, dot(normal, cameraSpaceLightDir));
+        vec3 baseRimColor = vec3(0.43, 0.69, 0.76); 
+        float opacity = getOpacity(uScroll);
+        gl_FragColor = vec4(baseRimColor, intensity * 0.7 * atmosphereLight * opacity);
       }
     `
-  }), [glowColor]);
+  }), [glowColor, lightDirection]);
 
   useFrame((state) => {
     const elapsed = state.clock.getElapsedTime();
     const scrollVal = scrollYProgress ? scrollYProgress.get() : 0;
 
     if (globeRef.current && globeRef.current.material) {
-      globeRef.current.rotation.y = elapsed * 0.004;
+      globeRef.current.rotation.y = elapsed * 0.002;
       const mat = globeRef.current.material as THREE.ShaderMaterial;
       if (mat.uniforms) {
         if (mat.uniforms.uTime) mat.uniforms.uTime.value = elapsed;
@@ -498,39 +379,70 @@ export const EarthGlobe: React.FC<{
       }
     }
     if (clouds1Ref.current && clouds1Ref.current.material) {
-      clouds1Ref.current.rotation.y = elapsed * 0.005;
+      clouds1Ref.current.rotation.y = elapsed * 0.0024;
       const mat = clouds1Ref.current.material as THREE.ShaderMaterial;
-      if (mat.uniforms && mat.uniforms.uTime) {
-        mat.uniforms.uTime.value = elapsed;
+      if (mat.uniforms) {
+        if (mat.uniforms.uTime) mat.uniforms.uTime.value = elapsed;
+        if (mat.uniforms.uScroll) mat.uniforms.uScroll.value = scrollVal;
       }
     }
     if (clouds2Ref.current && clouds2Ref.current.material) {
-      clouds2Ref.current.rotation.y = -elapsed * 0.003; // Counter rotate for dual cloud parallax
+      clouds2Ref.current.rotation.y = -elapsed * 0.0016;
       const mat = clouds2Ref.current.material as THREE.ShaderMaterial;
-      if (mat.uniforms && mat.uniforms.uTime) {
-        mat.uniforms.uTime.value = elapsed + 50.0;
+      if (mat.uniforms) {
+        if (mat.uniforms.uTime) mat.uniforms.uTime.value = elapsed + 50.0;
+        if (mat.uniforms.uScroll) mat.uniforms.uScroll.value = scrollVal;
       }
     }
     if (atmosphereRef.current && atmosphereRef.current.material) {
       const mat = atmosphereRef.current.material as THREE.ShaderMaterial;
-      if (mat.uniforms && mat.uniforms.uScroll) {
-        mat.uniforms.uScroll.value = scrollVal;
+      if (mat.uniforms) {
+        if (mat.uniforms.uScroll) mat.uniforms.uScroll.value = scrollVal;
       }
+    }
+
+    let targetX = 2.2;
+    let targetY = 1.0;
+    let targetZ = 0.0;
+    let targetScale = 1.6;
+
+    if (scrollVal <= 0.25) {
+      const p = scrollVal / 0.25;
+      targetX = THREE.MathUtils.lerp(2.2, -2.4, p);
+      targetY = THREE.MathUtils.lerp(1.0, -0.5, p);
+      targetZ = THREE.MathUtils.lerp(0.0, -1.0, p);
+      targetScale = THREE.MathUtils.lerp(1.6, 1.2, p);
+    } else if (scrollVal <= 0.60) {
+      const p = (scrollVal - 0.25) / 0.35;
+      targetX = THREE.MathUtils.lerp(-2.4, 0.0, p);
+      targetY = THREE.MathUtils.lerp(-0.5, -2.0, p);
+      targetZ = THREE.MathUtils.lerp(-1.0, -2.0, p);
+      targetScale = THREE.MathUtils.lerp(1.2, 0.8, p);
+    } else {
+      const p = Math.min((scrollVal - 0.60) / 0.40, 1.0);
+      targetX = THREE.MathUtils.lerp(0.0, -2.5, p);
+      targetY = THREE.MathUtils.lerp(-2.0, -2.5, p);
+      targetZ = THREE.MathUtils.lerp(-2.0, -3.0, p);
+      targetScale = THREE.MathUtils.lerp(0.8, 0.5, p);
+    }
+
+    if (groupRef.current) {
+      groupRef.current.position.set(targetX, targetY, targetZ);
+      groupRef.current.scale.set(targetScale, targetScale, targetScale);
     }
   });
 
   return (
-    <group position={[0, -5.2, -2.5]} scale={[5, 5, 5]}>
+    <group ref={groupRef} position={[2.2, 1.0, 0]} scale={[1.6, 1.6, 1.6]}>
       <mesh ref={globeRef}>
         <sphereGeometry args={[1, 64, 64]} />
         <shaderMaterial
           uniforms={earthShader.uniforms}
           vertexShader={earthShader.vertexShader}
           fragmentShader={earthShader.fragmentShader}
+          transparent={true}
         />
       </mesh>
-
-      {/* Cloud Layer 1 */}
       <mesh ref={clouds1Ref} scale={[1.008, 1.008, 1.008]}>
         <sphereGeometry args={[1, 64, 64]} />
         <shaderMaterial
@@ -541,8 +453,6 @@ export const EarthGlobe: React.FC<{
           depthWrite={false}
         />
       </mesh>
-
-      {/* Cloud Layer 2 (Dual layer parallax) */}
       <mesh ref={clouds2Ref} scale={[1.016, 1.016, 1.016]}>
         <sphereGeometry args={[1, 64, 64]} />
         <shaderMaterial
@@ -553,8 +463,6 @@ export const EarthGlobe: React.FC<{
           depthWrite={false}
         />
       </mesh>
-
-      {/* Atmosphere shell - Restored emerald green scatter */}
       <mesh ref={atmosphereRef} scale={[1.026, 1.026, 1.026]}>
         <sphereGeometry args={[1, 64, 64]} />
         <shaderMaterial
@@ -562,7 +470,6 @@ export const EarthGlobe: React.FC<{
           vertexShader={atmosphereShader.vertexShader}
           fragmentShader={atmosphereShader.fragmentShader}
           transparent
-          blending={THREE.AdditiveBlending}
           side={THREE.BackSide}
         />
       </mesh>
@@ -571,59 +478,11 @@ export const EarthGlobe: React.FC<{
 };
 
 export const EarthSceneContent: React.FC<{
-  cursorRef: React.RefObject<THREE.Vector3>;
-}> = ({ cursorRef }) => {
+  cursorRef?: React.RefObject<THREE.Vector3>;
+}> = ({ cursorRef: _cursorRef }) => {
   const earthTextures = useMemo(() => createEarthTextures(), []);
 
-  // Increased molecule count to 160 for a rich, dense, high-fidelity atmosphere
-  const moleculesData = useMemo(() => {
-    const data = [];
-    for (let i = 0; i < 160; i++) {
-      const rand = Math.random();
-      const type = rand < 0.45 ? 'CO2' : rand < 0.75 ? 'CH4' : rand < 0.90 ? 'CO' : 'Cluster';
-      
-      data.push({
-        id: i,
-        type: type as 'CO2' | 'CH4' | 'CO' | 'Cluster',
-        position: [
-          (Math.random() - 0.5) * 18.0, // Expanded horizontal span
-          (Math.random() * 22.0) - 13.0, // Expanded vertical span
-          (Math.random() - 0.5) * 8.5
-        ] as [number, number, number],
-        scale: Math.random() * 0.45 + 0.15, // Broad scale variation for balanced 3D parallax
-        rotationSpeed: [
-          (Math.random() - 0.5) * 0.0015,
-          (Math.random() - 0.5) * 0.0015,
-          (Math.random() - 0.5) * 0.0015
-        ] as [number, number, number]
-      });
-    }
-    return data;
-  }, []);
-
   return (
-    <>
-      <EarthGlobe earthTextures={earthTextures} />
-
-      {moleculesData.map((m) => (
-        <CO2Molecule
-          key={m.id}
-          position={m.position}
-          scale={m.scale}
-          rotationSpeed={m.rotationSpeed}
-          type={m.type}
-          cursorRef={cursorRef}
-        />
-      ))}
-
-      <CO2Molecule
-        isPulse
-        type="CO2"
-        position={[0.2, 2.1, 0.5]}
-        scale={0.18}
-        rotationSpeed={[0.0008, 0.0012, 0.0004]}
-        cursorRef={cursorRef}
-      />
-    </>
+    <EarthGlobe earthTextures={earthTextures} />
   );
 };
