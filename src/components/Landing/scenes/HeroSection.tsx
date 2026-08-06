@@ -141,23 +141,6 @@ export const HeroSection: React.FC = () => {
             </div>
           </motion.div>
 
-          {/* Subtext line under logo exactly as requested */}
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            animate={stage >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: 15 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-            className="text-[9px] font-mono uppercase tracking-[0.22em] text-[#9CB3C2]/50 flex items-center gap-1.5 font-bold"
-          >
-            <span>—</span>
-            <span className="text-[#EAEFF3]/85">TRADE</span>
-            <span className="text-[#8DE5E9]">•</span>
-            <span className="text-[#EAEFF3]/85">DEVELOP</span>
-            <span className="text-[#8DE5E9]">•</span>
-            <span className="text-[#EAEFF3]/85">MEASURE</span>
-            <span className="text-[#8DE5E9]">•</span>
-            <span className="text-[#EAEFF3]/85">IMPACT</span>
-            <span>—</span>
-          </motion.div>
 
           {/* Typography Copy */}
           <div className="space-y-4 max-w-xl">
@@ -180,26 +163,6 @@ export const HeroSection: React.FC = () => {
             </motion.p>
           </div>
 
-          {/* Action CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={stage >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-            transition={{ duration: 0.8, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="flex flex-wrap items-center gap-4 pt-2"
-          >
-            <a
-              href="/login"
-              className="inline-flex h-11 items-center justify-center rounded-md bg-[#008ba3] hover:bg-[#00a2bf] px-7 text-xs font-mono uppercase tracking-widest text-[#F5F7F8] font-bold transition-all active:scale-95 shadow-[0_4px_12px_rgba(5,8,6,0.3)] border border-[#8DE5E9]/20"
-            >
-              EXPLORE PLATFORM
-            </a>
-            <a
-              href="/login"
-              className="inline-flex h-11 items-center justify-center rounded-md border border-[#F5F7F8]/40 hover:bg-white/[0.05] hover:border-[#8DE5E9]/50 px-7 text-xs font-mono uppercase tracking-widest text-[#F5F7F8] font-bold transition-all active:scale-95"
-            >
-              BOOK A DEMO
-            </a>
-          </motion.div>
 
           {/* Checklist horizontal grid exactly like screenshot */}
           <motion.div
