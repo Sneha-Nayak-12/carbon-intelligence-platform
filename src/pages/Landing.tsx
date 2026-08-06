@@ -1,74 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { ArrowRight, Activity, CheckCircle } from 'lucide-react';
+import { motion, useTransform } from 'framer-motion';
+import { ArrowRight, Activity } from 'lucide-react';
 
 import {
   ScrollEngineProvider,
   useScrollEngine,
   UnifiedVisualProcessor,
+  HeroSection,
+  OceanCurrentCanvas,
 } from '../components/Landing';
 
 import { stepsData } from '../components/Landing/NarrativeState';
 
-// ==========================================
-// BIG-SIZED EXACT DESIGN OCEAN LOGO FOR HERO
-// ==========================================
-const BigOceanLogo: React.FC = () => {
-  return (
-    <div className="flex flex-col items-start space-y-4 font-mono w-full max-w-sm">
-      <svg className="w-full h-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="ocean-hero-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#0B7A75" />
-            <stop offset="40%" stopColor="#1C8A83" />
-            <stop offset="100%" stopColor="#3B8E67" />
-          </linearGradient>
-        </defs>
-        {/* O with wave inside */}
-        <g>
-          <circle cx="35" cy="35" r="24" stroke="url(#ocean-hero-grad)" strokeWidth="7" fill="none" />
-          {/* Exact Crest Wave Design */}
-          <path d="M 15 42 Q 22 55 35 55 Q 48 55 53 45 Q 40 48 32 40 Q 25 32 15 42" fill="url(#ocean-hero-grad)" />
-          <path d="M 15 46 Q 23 57 35 57 Q 47 57 51 47" stroke="#F5F7F8" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.6" />
-          <path d="M 17 40 Q 24 49 32 49 Q 40 49 44 43" stroke="#8DE5E9" strokeWidth="1" strokeLinecap="round" fill="none" opacity="0.8" />
-        </g>
-        {/* C */}
-        <path d="M78 18 C70 18, 62 25, 62 35 C62 45, 70 52, 78 52" stroke="url(#ocean-hero-grad)" strokeWidth="7" strokeLinecap="round" fill="none" />
-        {/* E */}
-        <path d="M110 18 H95 V52 H110 M95 35 H106" stroke="url(#ocean-hero-grad)" strokeWidth="7" strokeLinecap="round" fill="none" />
-        {/* A with Leaf replacing crossbar */}
-        <g>
-          <path d="M122 52 L134 18 L146 52" stroke="url(#ocean-hero-grad)" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-          {/* Tilted Green Leaf with Veins and details */}
-          <g transform="translate(122, 34) rotate(15)">
-            <path d="M0 5 C5 -3, 20 -3, 28 5 C20 13, 5 13, 0 5 Z" fill="#2CB587" />
-            <path d="M0 5 Q14 5 28 5" stroke="#07151C" strokeWidth="1.2" strokeLinecap="round" opacity="0.4" />
-            <path d="M4 3 C9 -1, 19 -1, 24 4" stroke="#F5F7F8" strokeWidth="0.8" strokeLinecap="round" fill="none" opacity="0.5" />
-          </g>
-        </g>
-        {/* N */}
-        <path d="M158 52 V18 L178 52 V18" stroke="url(#ocean-hero-grad)" strokeWidth="7" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        {/* Subtext */}
-        <text x="2" y="72" fill="#EAEFF3" fontSize="9" fontFamily="monospace" letterSpacing="1.8" fontWeight="bold">CARBON INTELLIGENCE PLATFORM</text>
-      </svg>
-      
-      <div className="w-full border-t border-ocean-border/60 my-1" />
-      
-      <div className="w-full flex justify-between items-center text-[10px] text-ocean-premium font-bold tracking-widest">
-        <span>—</span>
-        <span>TRADE</span>
-        <span>•</span>
-        <span>DEVELOP</span>
-        <span>•</span>
-        <span>MEASURE</span>
-        <span>•</span>
-        <span>IMPACT</span>
-        <span>—</span>
-      </div>
-    </div>
-  );
-};
+
 
 // ==========================================
 // MOCK DATA FOR COMPLIANCE EXCHANGE
@@ -403,7 +348,11 @@ const LandingContent: React.FC = () => {
 
   const {
     containerRef,
+    scrollYProgress,
   } = useScrollEngine();
+
+  // Opacity maps from 1.0 (at top of Scene 1) to 0.45 (at Scene 2 and onwards)
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.15], [1.0, 0.45]);
 
   useEffect(() => {
     const t1 = setTimeout(() => setBootState('logging'), 500);
@@ -475,20 +424,20 @@ const LandingContent: React.FC = () => {
   return (
     <div className="min-h-screen bg-ocean-bg-primary text-text-primary flex flex-col font-sans selection:bg-ocean-brand/20 selection:text-ocean-premium relative">
 
-      {/* Premium Ocean Sunrise Background Image */}
-      <div 
-        className="fixed inset-0 z-0 bg-cover bg-center pointer-events-none opacity-45 bg-[#07151C]" 
-        style={{ backgroundImage: "url('/ocean_bg.png')" }} 
+      {/* Photographic Sunset/Sea Background Image with dynamic scroll-driven opacity */}
+      <motion.div 
+        className="fixed inset-0 z-0 bg-cover bg-center pointer-events-none bg-[#07151C]" 
+        style={{ 
+          backgroundImage: "url('/ocean_bg.png')",
+          opacity: bgOpacity
+        }} 
       />
 
-      {/* Floating Ocean Plankton / Bubble Particles */}
-      <div className="fixed inset-0 z-1 pointer-events-none particles-drift" />
-
-      {/* Volumetric Ocean Light Rays */}
-      <div className="fixed inset-0 z-2 pointer-events-none volumetric-beams" />
-
-      {/* caustics sunrise ambient light overlay */}
-      <div className="fixed inset-0 z-3 pointer-events-none caustics-overlay" />
+      {/* 1. Global Background Canvas showing the continuous, scroll-driven OCEAN Current */}
+      <OceanCurrentCanvas 
+        revealStage={4} 
+        scrollYProgress={scrollYProgress} 
+      />
 
       {/* Top Header Navigation */}
       <nav className="fixed top-0 z-50 w-full bg-ocean-bg-primary/95 backdrop-blur-md border-b border-ocean-divider h-14 flex items-center justify-between px-6 md:px-12">
@@ -517,67 +466,21 @@ const LandingContent: React.FC = () => {
         </div>
       </nav>
 
+      {/* 1. Redesigned Hero Section (Scene 1) */}
+      <div ref={heroRef} data-phase="boot">
+        <HeroSection />
+      </div>
+
       {/* Main Page Layout Container (Left: Scrolling content, Right: Sticky Master Dashboard) */}
       <div 
         ref={containerRef}
-        className="relative max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-start z-10 px-6 md:px-12 pt-28 pb-32"
+        className="relative max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-start z-10 px-6 md:px-12 pt-16 pb-32"
       >
         
         {/* Left Side: Continuous Scrolling Copy */}
         <div className="space-y-48">
           
-          {/* Section 1: Hero Block */}
-          <div 
-            ref={heroRef}
-            data-phase="boot"
-            className="space-y-8 pt-12"
-          >
-            <div className="space-y-6">
-              <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-ocean-premium bg-ocean-brand/12 border border-ocean-brand/20 px-2 py-0.5 rounded font-bold">
-                SEC. 01 // Sovereign Carbon Registry
-              </span>
-              
-              {/* Exact Design big-sized logo */}
-              <BigOceanLogo />
-
-              <h1 className="text-3xl md:text-4xl font-display font-semibold text-text-primary leading-tight mt-6">
-                The Operating System for Trusted Carbon Markets.
-              </h1>
-            </div>
-
-            <p className="text-sm text-text-secondary max-w-lg leading-relaxed">
-              OCEAN is the end-to-end carbon intelligence platform to develop, verify, trade and retire high-integrity carbon credits at global scale. Developed by **GreenASHA** to bridge capital to verified ecological developer assets.
-            </p>
-
-            <div className="flex gap-4">
-              <Link to="/login" className="ocean-btn-primary font-mono text-xs uppercase tracking-wider">
-                Explore Platform
-              </Link>
-              <Link to="/login" className="ocean-btn-secondary font-mono text-xs uppercase tracking-wider">
-                Book A Demo
-              </Link>
-            </div>
-
-            {/* Verification highlights */}
-            <div className="grid grid-cols-2 gap-4 pt-6 border-t border-ocean-divider text-[10px]">
-              <div className="flex items-center gap-2 text-text-secondary">
-                <CheckCircle className="h-4 w-4 text-ocean-success" />
-                <span>AI-Powered Intelligence</span>
-              </div>
-              <div className="flex items-center gap-2 text-text-secondary">
-                <CheckCircle className="h-4 w-4 text-ocean-success" />
-                <span>Blockchain Secured Ledger</span>
-              </div>
-              <div className="flex items-center gap-2 text-text-secondary">
-                <CheckCircle className="h-4 w-4 text-ocean-success" />
-                <span>Global Compliance Ready</span>
-              </div>
-              <div className="flex items-center gap-2 text-text-secondary">
-                <CheckCircle className="h-4 w-4 text-ocean-success" />
-                <span>High Integrity Assured</span>
-              </div>
-            </div>
-          </div>
+          {/* Section 1 is now handled by HeroSection outside the grid container */}
 
 
           {/* Section 2: Lifecycle Scrollytelling Cards */}

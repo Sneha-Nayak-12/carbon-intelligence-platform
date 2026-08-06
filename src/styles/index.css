@@ -178,3 +178,20 @@
   pointer-events: none;
 }
 
+/* Glassmorphic Integrated Dashboard Console styling */
+.dashboard-integrated {
+  background: rgba(6, 21, 32, 0.65);
+  border: 1px solid rgba(28, 138, 131, 0.25);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 0 20px rgba(141, 229, 233, 0.04);
+  backdrop-filter: blur(12px);
+  position: relative;
+}
+
+.dashboard-cyan-reflection {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at top right, rgba(141, 229, 233, 0.08) 0%, transparent 60%);
+}
+
+

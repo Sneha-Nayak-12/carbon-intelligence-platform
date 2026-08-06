@@ -8,6 +8,8 @@ export * from './UnifiedVisualProcessor';
 
 // Scenes exports
 export * from './scenes/HeroScene';
+export * from './scenes/HeroSection';
+export * from './scenes/OceanCurrentCanvas';
 export * from './scenes/CaptureScene';
 export * from './scenes/TransformationScene';
 export * from './scenes/VerificationScene';
