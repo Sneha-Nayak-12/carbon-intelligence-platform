@@ -7,7 +7,7 @@ import { OceanCurrentCanvas } from './OceanCurrentCanvas';
 // ==========================================
 const OfficialOceanLogo: React.FC = () => {
   return (
-    <svg className="w-full h-auto" viewBox="0 0 320 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg className="w-full h-auto" viewBox="0 0 206 80" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="ocean-hero-grad" x1="0%" y1="0%" x2="100%" y2="0%">
           <stop offset="0%" stopColor="#0B7A75" />
@@ -111,90 +111,84 @@ export const HeroSection: React.FC = () => {
       />
 
       {/* 3. LAYER: STACKED CONTENT CONTAINER */}
-      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-[1.25fr_0.75fr] gap-12 lg:gap-16 items-center px-6 md:px-12 z-20 relative">
+      <div className="max-w-7xl mx-auto w-full flex flex-col items-center justify-center gap-16 px-6 md:px-12 z-20 relative pt-12">
         
-        {/* Left Side: 65% Brand Storytelling */}
-        <motion.div 
-          style={{ x: textParallaxX, y: textParallaxY }}
-          className="flex flex-col items-start space-y-6 w-full"
+        {/* Top Centered Logo (Main Attraction of Scene 1) */}
+        <motion.div
+          initial={{ opacity: 0, y: 30, scale: 0.96 }}
+          animate={stage >= 3 ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.96 }}
+          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          className="relative w-full max-w-[480px] group mx-auto flex justify-center"
         >
-          {/* Logo container (emerges at Stage 3) */}
-          <motion.div
-            initial={{ opacity: 0, y: 30, scale: 0.96 }}
-            animate={stage >= 3 ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.96 }}
-            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-[460px] group"
-          >
-            {/* Soft lighting rays overlaying logo wrapper */}
-            <div className="absolute -inset-6 bg-[#8DE5E9]/5 rounded-full blur-3xl pointer-events-none group-hover:bg-[#8DE5E9]/8 transition-colors duration-1000" />
-            
-            {/* The actual brand logo */}
-            <div className="relative overflow-hidden p-1.5 rounded-lg border border-transparent">
-              <OfficialOceanLogo />
-              {/* Shimmering caustics reflections moving on logo */}
-              <div 
-                className="absolute inset-0 pointer-events-none mix-blend-color-dodge opacity-20 bg-[radial-gradient(circle_at_50%_50%,#8DE5E9_0%,transparent_60%)] bg-[size:200%_200%] animate-[caustics-slide_7s_ease-in-out_infinite]" 
-                style={{
-                  backgroundImage: `radial-gradient(circle at ${50 + Math.sin(Date.now() * 0.001) * 30}% ${50 + Math.cos(Date.now() * 0.001) * 30}%, #8DE5E9 0%, transparent 60%)`
-                }}
-              />
-            </div>
-          </motion.div>
-
-
-          {/* Typography Copy */}
-          <div className="space-y-4 max-w-xl">
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={stage >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
-              className="text-3xl md:text-[38px] font-display font-semibold text-text-primary leading-[1.2] tracking-tight"
-            >
-              The Operating System for Trusted Carbon Markets.
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={stage >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="text-sm text-text-muted leading-relaxed font-sans font-light"
-            >
-              OCEAN is the end-to-end carbon intelligence platform to develop, verify, trade and retire high-integrity carbon credits at global scale. Developed by **GreenASHA** to bridge capital to verified ecological developer assets.
-            </motion.p>
+          {/* Soft lighting rays overlaying logo wrapper */}
+          <div className="absolute -inset-6 bg-[#8DE5E9]/5 rounded-full blur-3xl pointer-events-none group-hover:bg-[#8DE5E9]/8 transition-colors duration-1000" />
+          
+          {/* The actual brand logo without any surrounding translucent box */}
+          <div className="relative w-full">
+            <OfficialOceanLogo />
           </div>
-
-
-          {/* Checklist horizontal grid exactly like screenshot */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={stage >= 4 ? { opacity: 1 } : { opacity: 0 }}
-            transition={{ duration: 1.0, delay: 0.45 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-white/5 w-full text-[9px] font-mono tracking-wider text-[#9CB3C2]/75 uppercase"
-          >
-            <div className="flex items-center gap-2">
-              <CustomCheckIcon />
-              <span>AI-Powered Intelligence</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CustomCheckIcon />
-              <span>Blockchain Secured Ledger</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CustomCheckIcon />
-              <span>Global Compliance Ready</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <CustomCheckIcon />
-              <span>High Integrity Assured</span>
-            </div>
-          </motion.div>
         </motion.div>
 
-        {/* Right Side: 35% Product Preview */}
-        <motion.div
-          style={{ x: dashboardParallaxX, y: dashboardParallaxY }}
-          className="w-full flex justify-center lg:justify-end"
-        >
+        {/* Copy Section and Dashboard Section Side by Side */}
+        <div className="grid lg:grid-cols-[1.25fr_0.75fr] gap-12 lg:gap-16 items-center w-full">
+          
+          {/* Left Side: Brand Storytelling */}
+          <motion.div 
+            style={{ x: textParallaxX, y: textParallaxY }}
+            className="flex flex-col items-start space-y-8 w-full text-left"
+          >
+            {/* Typography Copy */}
+            <div className="space-y-4 max-w-xl text-left">
+              <motion.h1
+                initial={{ opacity: 0, y: 20 }}
+                animate={stage >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.8, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                className="text-3xl md:text-[38px] font-display font-semibold text-text-primary leading-[1.2] tracking-tight text-left"
+              >
+                The Operating System for Trusted Carbon Markets.
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={stage >= 4 ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+                transition={{ duration: 0.8, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                className="text-sm text-text-muted leading-relaxed font-sans font-light text-left"
+              >
+                OCEAN is the end-to-end carbon intelligence platform to develop, verify, trade and retire high-integrity carbon credits at global scale. Developed by **GreenASHA** to bridge capital to verified ecological developer assets.
+              </motion.p>
+            </div>
+
+            {/* Checklist */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={stage >= 4 ? { opacity: 1 } : { opacity: 0 }}
+              transition={{ duration: 1.0, delay: 0.45 }}
+              className="grid grid-cols-2 gap-4 pt-8 border-t border-white/5 w-full text-[9px] font-mono tracking-wider text-[#9CB3C2]/75 uppercase"
+            >
+              <div className="flex items-center gap-2">
+                <CustomCheckIcon />
+                <span>AI-Powered Intelligence</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CustomCheckIcon />
+                <span>Blockchain Secured Ledger</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CustomCheckIcon />
+                <span>Global Compliance Ready</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CustomCheckIcon />
+                <span>High Integrity Assured</span>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Side: Product Preview */}
+          <motion.div
+            style={{ x: dashboardParallaxX, y: dashboardParallaxY }}
+            className="w-full flex justify-center lg:justify-end"
+          >
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 40 }}
             animate={stage >= 4 ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.95, y: 40 }}
@@ -268,6 +262,7 @@ export const HeroSection: React.FC = () => {
           </motion.div>
         </motion.div>
       </div>
+    </div>
 
       {/* 4. LAYER: SUBTLE CORAL SILHOUETTES FRAMING BOTTOM CORNERS (10% Atmosphere) */}
       <motion.div 

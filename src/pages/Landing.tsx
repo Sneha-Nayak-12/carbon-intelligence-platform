@@ -442,11 +442,10 @@ const LandingContent: React.FC = () => {
       {/* Top Header Navigation */}
       <nav className="fixed top-0 z-50 w-full bg-ocean-bg-primary/95 backdrop-blur-md border-b border-ocean-divider h-14 flex items-center justify-between px-6 md:px-12">
         <div className="flex items-center gap-3">
-          <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-9 w-auto object-contain" />
+          <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-11 w-auto object-contain" />
           <div className="h-6 w-px bg-ocean-border/60 hidden sm:block" />
-          <div className="hidden sm:flex flex-col text-[8px] text-text-muted uppercase leading-tight">
-            <span>Empowering carbon free mother earth</span>
-            <span>Escrow Ledger v1.0</span>
+          <div className="hidden sm:flex flex-col text-[11px] text-text-muted uppercase leading-tight font-medium">
+            <span>Engineering carbon free mother earth</span>
           </div>
         </div>
 
