@@ -9,6 +9,9 @@ export * from './UnifiedVisualProcessor';
 // Scenes exports
 export * from './scenes/HeroScene';
 export * from './scenes/HeroSection';
+export * from './scenes/OceanLogo';
+export * from './scenes/CinematicTitleCard';
+export * from './scenes/OceanSurfaceTransition';
 export * from './scenes/OceanCurrentCanvas';
 export * from './scenes/CaptureScene';
 export * from './scenes/TransformationScene';

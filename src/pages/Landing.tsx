@@ -339,12 +339,23 @@ const LandingContent: React.FC = () => {
   const [selectedBatch, setSelectedBatch] = useState('OCN-24-001');
   const [batches, setBatches] = useState(mockExchangeBatches);
   const [updatedRowId, setUpdatedRowId] = useState<string | null>(null);
+  const [showNav, setShowNav] = useState(false);
 
   const stepRefs = useRef<HTMLDivElement[]>([]);
   const heroRef = useRef<HTMLDivElement>(null);
   const marketplaceRef = useRef<HTMLDivElement>(null);
   const aiSimRef = useRef<HTMLDivElement>(null);
   const networkRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Scene 1 title sequence is pure; reveal nav as viewer dives into Scene 2
+      setShowNav(window.scrollY > window.innerHeight * 0.85);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const {
     containerRef,
@@ -439,8 +450,14 @@ const LandingContent: React.FC = () => {
         scrollYProgress={scrollYProgress} 
       />
 
-      {/* Top Header Navigation */}
-      <nav className="fixed top-0 z-50 w-full bg-ocean-bg-primary/95 backdrop-blur-md border-b border-ocean-divider h-14 flex items-center justify-between px-6 md:px-12">
+      {/* Top Header Navigation (Reveals as viewer dives into Scene 2) */}
+      <motion.nav 
+        initial={{ y: -65, opacity: 0 }}
+        animate={showNav ? { y: 0, opacity: 1 } : { y: -65, opacity: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="fixed top-0 z-50 w-full bg-ocean-bg-primary/95 backdrop-blur-md border-b border-ocean-divider h-14 flex items-center justify-between px-6 md:px-12"
+        style={{ pointerEvents: showNav ? 'auto' : 'none' }}
+      >
         <div className="flex items-center gap-3">
           <img src="/green_asha_logo.png" alt="GreenASHA Logo" className="h-11 w-auto object-contain" />
           <div className="h-6 w-px bg-ocean-border/60 hidden sm:block" />
@@ -463,23 +480,37 @@ const LandingContent: React.FC = () => {
             Enter Platform
           </Link>
         </div>
-      </nav>
+      </motion.nav>
 
-      {/* 1. Redesigned Hero Section (Scene 1) */}
+      {/* 1. Cinematic Title Sequence (Scene 1) & Surface Dive Transition */}
       <div ref={heroRef} data-phase="boot">
         <HeroSection />
       </div>
 
-      {/* Main Page Layout Container (Left: Scrolling content, Right: Sticky Master Dashboard) */}
+      {/* Scene 2: Platform Discovery, Carbon Current, Workflow & Sticky Master Dashboard */}
       <div 
+        id="scene-2"
         ref={containerRef}
-        className="relative max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-start z-10 px-6 md:px-12 pt-16 pb-32"
+        className="relative max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-start z-10 px-6 md:px-12 pt-20 pb-32"
       >
         
         {/* Left Side: Continuous Scrolling Copy */}
         <div className="space-y-48">
           
-          {/* Section 1 is now handled by HeroSection outside the grid container */}
+          {/* Section 1: Submerged Ecosystem Introduction */}
+          <div className="space-y-6 pt-6">
+            <div className="space-y-3">
+              <span className="inline-block text-[10px] font-mono uppercase tracking-widest text-ocean-premium bg-ocean-brand/15 border border-ocean-brand/25 px-2.5 py-1 rounded font-bold">
+                SEC. 01 // Submerged Ecosystem
+              </span>
+              <h2 className="text-3xl md:text-4xl font-display font-semibold text-text-primary tracking-tight">
+                The Operating System for Trusted Carbon Markets.
+              </h2>
+            </div>
+            <p className="text-sm text-text-secondary leading-relaxed max-w-lg font-light">
+              OCEAN is the end-to-end carbon intelligence platform to develop, verify, trade and retire high-integrity carbon credits at global scale. Developed by GreenASHA to bridge institutional capital to verified ecological developer assets.
+            </p>
+          </div>
 
 
           {/* Section 2: Lifecycle Scrollytelling Cards */}

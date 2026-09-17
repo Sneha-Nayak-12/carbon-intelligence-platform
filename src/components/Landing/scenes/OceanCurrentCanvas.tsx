@@ -182,13 +182,10 @@ export const OceanCurrentCanvas: React.FC<OceanCurrentCanvasProps> = ({
         ctx.restore();
       }
 
-      // --- STAGE 2: Spline Flowing Carbon Current ---
+      // --- STAGE 2: Spline Flowing Carbon Current (Emerges only in Scene 2 underwater) ---
       let currentOpacity = 0;
-      if (scrollVal > 0.15) {
-        currentOpacity = Math.min(1.0, (scrollVal - 0.15) * 8.0);
-      } else if (revealStage >= 2) {
-        // High opacity right from reveal load, matching user's screenshot
-        currentOpacity = 0.9;
+      if (scrollVal > 0.12) {
+        currentOpacity = Math.min(1.0, (scrollVal - 0.12) * 6.0);
       }
 
       if (currentOpacity > 0) {
